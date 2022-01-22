@@ -69,9 +69,9 @@ def train(**kwargs):
                                        )
     faster_rcnn = FasterRCNNVGG16()
     print('model construct completed')
-    device = torch.device('cpu')
-    faster_rcnn.to(device)
-    trainer = FasterRCNNTrainer(faster_rcnn).cpu()
+    # device = torch.device('cpu')
+    # faster_rcnn.to(device)
+    trainer = FasterRCNNTrainer(faster_rcnn).cuda()
     if opt.load_path:
         trainer.load(opt.load_path)
         print('load pretrained model from %s' % opt.load_path)
@@ -82,7 +82,7 @@ def train(**kwargs):
         trainer.reset_meters()
         for ii, (img, bbox_, label_, scale) in tqdm(enumerate(dataloader)):
             scale = at.scalar(scale)
-            img, bbox, label = img.cpu().float(), bbox_.cpu(), label_.cpu()
+            img, bbox, label = img.cuda().float(), bbox_.cuda(), label_.cuda()
             trainer.train_step(img, bbox, label, scale)
 
             if (ii + 1) % opt.plot_every == 0:

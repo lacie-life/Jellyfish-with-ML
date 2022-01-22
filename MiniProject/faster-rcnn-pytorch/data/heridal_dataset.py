@@ -105,7 +105,7 @@ class HeridalDataset:
         """
         id_ = self.ids[i]
         anno = ET.parse(
-            os.path.join(self.data_dir, self.split +  '/labels', id_ + '.xml'))
+            os.path.join(self.data_dir, self.split + '/labels/', id_ + '.xml'))
         bbox = list()
         label = list()
         difficult = list()
@@ -138,4 +138,5 @@ class HeridalDataset:
 
     __getitem__ = get_example
 
-LABEL_NAMES = ('human')
+
+LABEL_NAMES = ('human',)
