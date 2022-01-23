@@ -106,12 +106,13 @@ class HeridalDataset:
         id_ = self.ids[i]
         anno = ET.parse(
             os.path.join(self.data_dir, self.split + '/labels/', id_ + '.xml'))
+        print("Path: " + os.path.join(self.data_dir, self.split + '/labels/', id_ + '.xml'))
         bbox = list()
         label = list()
         difficult = list()
         for obj in anno.findall('object'):
             # when in not using difficult split, and the object is
-            # difficult, skipt it.
+            # difficult, skip it.
             if not self.use_difficult and int(obj.find('difficult').text) == 1:
                 continue
 
