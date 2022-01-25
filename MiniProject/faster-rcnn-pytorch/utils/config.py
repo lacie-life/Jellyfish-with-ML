@@ -7,7 +7,7 @@ from pprint import pprint
 
 class Config:
     # data
-    data_dir = '/home/jun/Data/click/heridal/'
+    data_dir = '/home/jun/Data/heridal/'
     min_size = 600  # image resize
     max_size = 1000 # image resize
     num_workers = 8

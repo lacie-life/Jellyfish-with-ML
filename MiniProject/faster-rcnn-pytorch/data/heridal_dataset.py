@@ -124,7 +124,12 @@ class HeridalDataset:
                 for tag in ('ymin', 'xmin', 'ymax', 'xmax')])
             name = obj.find('name').text.lower().strip()
             label.append(LABEL_NAMES.index(name))
-        bbox = np.stack(bbox).astype(np.float32)
+
+        try:
+            bbox = np.stack(bbox).astype(np.float32)
+        except ValueError as e:
+            raise ValueError('could not parse object #{}: {}'.format(id_, e))
+
         label = np.stack(label).astype(np.int32)
         # When `use_difficult==False`, all elements in `difficult` are False.
         difficult = np.array(difficult, dtype=np.bool).astype(np.uint8)  # PyTorch don't support np.bool
