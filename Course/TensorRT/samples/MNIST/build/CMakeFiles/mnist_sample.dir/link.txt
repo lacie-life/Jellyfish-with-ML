@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/mnist_sample.dir/sampleMNIST.cpp.o  -o mnist_sample  -lnvinfer -lnvinfer_plugin -lnvcaffe_parser 
