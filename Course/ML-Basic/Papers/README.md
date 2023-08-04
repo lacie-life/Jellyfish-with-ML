@@ -1,1 +1,0 @@
-https://machinelearningcoban.com/2017/08/05/phdlife/

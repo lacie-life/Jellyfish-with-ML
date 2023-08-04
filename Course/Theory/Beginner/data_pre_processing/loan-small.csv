@@ -1,0 +1,17 @@
+Loan_ID,Gender,ApplicantIncome,CoapplicantIncome,LoanAmount,Area,Loan_Status
+LP001002,,5849,0,,urban,Y
+LP001003,Male,4583,,128,semi,N
+LP001005,Male,3000,0,66,,Y
+LP001006,Female,2583,2358,120,semi,
+LP001008,Male,,0,141,urban,Y
+LP001011,Male,5417,4196,267,semi,Y
+LP001013,Male,2333,1516,,rural,Y
+LP001014,Female,3036,2504,158,semi,N
+LP001018,Male,4006,1526,168,rural,Y
+LP001020,Male,12841,10968,349,semi,N
+LP001024,Female,3200,700,70,urban,Y
+LP001027,Male,2500,1840,109,urban,Y
+LP001028,Female,,8106,,urban,Y
+LP001029,Male,1853,2840,114,urban,N
+LP001030,Male,1299,1086,17,semi,Y
+LP001032,Male,4950,0,125,semi,Y

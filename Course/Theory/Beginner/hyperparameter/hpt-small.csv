@@ -1,0 +1,501 @@
+age,wc,education,marital status,race,gender,hours per week,IncomeClass
+38, Private, HS-grad, Divorced, White, Male,40, <=50K
+28, Private, Bachelors,Married, Black, Female,40, <=50K
+37, Private, Masters,Married, White, Female,40, <=50K
+31, Private, Masters, Never-married, White, Female,50, >50K
+42, Private, Bachelors,Married, White, Male,40, >50K
+37, Private, Some-college,Married, Black, Male,80, >50K
+23, Private, Bachelors, Never-married, White, Female,30, <=50K
+32, Private, HS-grad, Never-married, White, Male,40, <=50K
+40, Private, Doctorate,Married, White, Male,60, >50K
+59, Private, HS-grad, Divorced, White, Female,40, <=50K
+56, Local-gov, Bachelors,Married, White, Male,40, >50K
+19, Private, HS-grad, Never-married, White, Male,40, <=50K
+39, Private, HS-grad, Divorced, White, Male,80, <=50K
+49, Private, HS-grad,Married, White, Male,40, <=50K
+20, Private, Some-college, Never-married, Black, Male,44, <=50K
+45, Private, Bachelors, Divorced, White, Male,40, <=50K
+30, Federal-gov, Some-college,Married, White, Male,40, <=50K
+21, Private, Some-college, Never-married, White, Male,40, <=50K
+19, Private, HS-grad,Married, White, Female,25, <=50K
+31, Private, Some-college,Married, White, Male,38, >50K
+24, Private, Bachelors,Married, White, Male,50, <=50K
+25, Private, HS-grad, Never-married, White, Male,35, <=50K
+57, Federal-gov, Bachelors,Married, Black, Male,40, >50K
+53, Private, HS-grad,Married, White, Male,38, <=50K
+44, Private, Masters, Divorced, White, Female,40, <=50K
+25, Private, Some-college,Married, Other, Female,40, <=50K
+18, Private, HS-grad, Never-married, White, Female,30, <=50K
+47, Private, Prof-school,Married, White, Female,60, >50K
+50, Federal-gov, Bachelors, Divorced, White, Male,55, >50K
+43, Private, Some-college,Married, White, Male,40, >50K
+41, Private, HS-grad,Married, White, Male,48, <=50K
+30, Private, HS-grad,Married, White, Male,40, <=50K
+30, Private, Bachelors,Married, White, Male,40, <=50K
+48, Private, HS-grad,Married, White, Male,40, <=50K
+42, Private, Doctorate,Married, White, Male,45, >50K
+29, Private, Some-college, Divorced, White, Male,58, <=50K
+36, Private, HS-grad,Married, White, Male,40, <=50K
+28, Private, Some-college, Divorced, White, Female,40, <=50K
+53, Private, HS-grad,Married, White, Female,40, >50K
+19, Private, Some-college, Never-married, White, Male,32, <=50K
+23, Private, Some-college, Never-married, White, Male,40, <=50K
+79, Private, Some-college,Married, White, Male,20, <=50K
+27, Private, HS-grad, Never-married, White, Male,40, <=50K
+18, Private, HS-grad, Never-married, White, Male,30, <=50K
+52, Private, Bachelors,Married, White, Male,40, <=50K
+46, Private, HS-grad,Married, White, Female,40, <=50K
+59, Private, HS-grad,Married, White, Male,48, <=50K
+44, Private, HS-grad, Divorced, White, Female,40, >50K
+53, Private, HS-grad, Divorced, White, Female,35, <=50K
+49, Local-gov, HS-grad,Married, White, Male,40, >50K
+33, Private, Masters,Married, White, Male,50, <=50K
+43, Federal-gov, Doctorate, Never-married, White, Female,50, >50K
+37, Private, Some-college, Divorced, White, Female,40, <=50K
+28, Private, Some-college, Divorced, Black, Female,25, <=50K
+30, Private, HS-grad,Married, Asian-Pac-Islander, Female,35, <=50K
+34, Local-gov, Bachelors,Married, White, Male,40, >50K
+29, Local-gov, Some-college, Never-married, White, Male,50, <=50K
+37, Private, Some-college,Married, White, Male,48, >50K
+32, Federal-gov, HS-grad, Never-married, Black, Male,40, <=50K
+76, Private, Masters,Married, White, Male,40, >50K
+44, Private, Bachelors,Married, White, Male,60, >50K
+20, Private, Some-college, Never-married, White, Female,40, <=50K
+29, Private, HS-grad, Never-married, White, Male,40, <=50K
+31, Local-gov, HS-grad, Never-married, White, Female,40, <=50K
+42, Private, HS-grad,Married, White, Male,40, <=50K
+24, Private, Bachelors, Never-married, White, Male,40, <=50K
+38, Private, Prof-school,Married, White, Male,40, >50K
+28, Private, Some-college,Married, White, Female,25, <=50K
+36, Private, HS-grad, Never-married, White, Female,40, <=50K
+55, Private, Some-college,Married, White, Male,56, <=50K
+22, Private, HS-grad, Never-married, White, Male,41, <=50K
+21, Private, Some-college, Never-married, White, Female,40, <=50K
+40, Private, Bachelors,Married, White, Male,60, <=50K
+30, Private, Bachelors, Never-married, Black, Male,40, <=50K
+19, Private, Some-college, Never-married, Black, Male,35, <=50K
+47, Private, Bachelors,Married, White, Female,40, >50K
+20, Private, Some-college, Never-married, White, Female,28, <=50K
+39, Private, Some-college, Divorced, White, Male,40, <=50K
+24, Private, HS-grad, Never-married, White, Female,40, <=50K
+37, Private, Bachelors,Married, White, Male,50, <=50K
+38, Federal-gov, Masters,Married, White, Male,40, >50K
+20, Private, Some-college, Never-married, White, Male,20, <=50K
+49, Private, Some-college,Married, Asian-Pac-Islander, Male,40, >50K
+27, Private, Some-college, Never-married, White, Female,40, <=50K
+19, Private, Some-college, Never-married, White, Male,30, <=50K
+70, Private, Some-college, Never-married, White, Male,40, <=50K
+31, Private, HS-grad, Never-married, Black, Female,30, <=50K
+22, Private, Some-college,Married, White, Male,24, <=50K
+36, Private, HS-grad, Widowed, White, Female,24, <=50K
+47, Local-gov, Some-college, Divorced, White, Female,38, <=50K
+34, Private, HS-grad, Never-married, White, Female,40, <=50K
+33, Private, Bachelors, Never-married, Asian-Pac-Islander, Female,40, <=50K
+21, Private, HS-grad, Never-married, White, Male,35, <=50K
+48, Private, HS-grad,Married, White, Male,46, <=50K
+23, Private, Bachelors, Never-married, White, Male,40, <=50K
+29, Private, HS-grad, Divorced, White, Male,60, <=50K
+25, Private, HS-grad, Never-married, White, Female,40, <=50K
+28, Private, HS-grad, Never-married, Asian-Pac-Islander, Female,40, <=50K
+36, Private, Some-college, Divorced, White, Female,40, <=50K
+27, Private, HS-grad, Never-married, White, Male,40, <=50K
+51, Private, Some-college,Married, White, Male,40, >50K
+27, Private, Bachelors, Never-married, White, Male,50, <=50K
+27, Private, HS-grad,Married, White, Female,25, <=50K
+21, Private, HS-grad, Never-married, Black, Male,40, <=50K
+34, Private, HS-grad, Never-married, Black, Male,40, <=50K
+18, Private, HS-grad, Never-married, White, Male,12, <=50K
+33, Private, Bachelors,Married, White, Male,65, <=50K
+44, Local-gov, Some-college,Married, Black, Male,38, >50K
+43, Private, Some-college, Divorced, White, Female,40, <=50K
+30, Private, Some-college, Never-married, Black, Male,45, <=50K
+37, Federal-gov, Some-college,Married, White, Male,42, >50K
+34, Private, HS-grad,Married, Black, Male,40, <=50K
+31, Private, Masters,Married, White, Female,50, <=50K
+38, Private, Some-college, Divorced, Black, Female,28, <=50K
+24, Private, Some-college,Married, White, Male,40, <=50K
+41, Local-gov, Bachelors,Married, Black, Male,40, <=50K
+47, Private, Some-college,Married, White, Male,45, <=50K
+41, Federal-gov, Bachelors,Married, White, Male,24, <=50K
+36, Private, Some-college, Divorced, White, Male,40, <=50K
+40, Federal-gov, Masters, Never-married, White, Female,55, >50K
+35, Private, Masters,Married, White, Male,40, >50K
+26, Private, Masters, Never-married, White, Female,40, <=50K
+51, Private, Bachelors,Married, White, Male,50, >50K
+42, Local-gov, Some-college, Never-married, White, Female,40, <=50K
+36, Private, Bachelors,Married, Black, Male,36, >50K
+35, Private, HS-grad, Divorced, White, Male,60, <=50K
+44, Local-gov, HS-grad,Married, Black, Male,40, <=50K
+37, Private, HS-grad,Married, White, Male,40, >50K
+35, Private, Some-college, Never-married, Amer-Indian-Eskimo, Female,40, <=50K
+60, Private, HS-grad,Married, Asian-Pac-Islander, Male,40, <=50K
+37, Private, Bachelors, Never-married, Black, Male,60, >50K
+38, Private, Bachelors,Married, White, Male,50, <=50K
+45, Private, Bachelors,Married, White, Male,55, <=50K
+31, Private, Some-college,Married, White, Male,40, <=50K
+90, Private, HS-grad, Never-married, Black, Male,40, <=50K
+54, Private, HS-grad,Married, Black, Male,20, <=50K
+53, Local-gov, Preschool, Never-married, White, Female,35, <=50K
+18, Private, HS-grad, Never-married, White, Female,40, <=50K
+65, Private, HS-grad, Divorced, White, Female,40, <=50K
+41, Private, HS-grad, Divorced, Black, Female,38, <=50K
+25, Private, Some-college, Never-married, White, Male,42, <=50K
+33, Private, Some-college, Divorced, Other, Female,40, <=50K
+28, Private, Prof-school, Never-married, White, Male,55, >50K
+41, Private, Bachelors,Married, White, Male,50, >50K
+38, Local-gov, Masters,Married, White, Male,70, >50K
+23, Private, HS-grad, Never-married, White, Male,40, <=50K
+40, Private, Bachelors,Married, White, Male,40, >50K
+38, Private, Some-college, Divorced, White, Male,40, <=50K
+56, Private, HS-grad,Married, White, Male,35, <=50K
+58, Private, HS-grad,Married, White, Male,45, >50K
+32, Private, HS-grad, Never-married, White, Female,34, <=50K
+45, Private, HS-grad,Married, White, Male,40, <=50K
+41, Private, Prof-school,Married, White, Female,40, >50K
+42, Private, Bachelors,Married, Black, Female,40, <=50K
+19, Local-gov, Some-college, Never-married, White, Male,40, <=50K
+58, Private, Some-college, Never-married, White, Male,20, <=50K
+20, Private, HS-grad, Never-married, White, Female,40, <=50K
+36, Private, Bachelors, Divorced, White, Female,40, <=50K
+45, Private, HS-grad,Married, White, Male,60, <=50K
+59, Private, Some-college,Married, White, Male,40, <=50K
+64, Private, HS-grad,Married, White, Male,40, >50K
+33, Private, Bachelors, Never-married, White, Female,45, <=50K
+33, Private, HS-grad,Married, White, Female,40, >50K
+61, Private, HS-grad,Married, White, Male,40, >50K
+27, Local-gov, Masters, Never-married, White, Male,35, <=50K
+30, Private, HS-grad, Divorced, White, Female,40, <=50K
+43, Private, HS-grad,Married, Black, Male,40, <=50K
+44, Private, Some-college,Married, White, Male,40, >50K
+35, Private, Some-college, Never-married, White, Female,40, <=50K
+25, Private, Some-college, Never-married, White, Female,40, <=50K
+24, Private, Some-college,Married, White, Female,48, >50K
+22, Private, Bachelors, Never-married, White, Female,15, <=50K
+42, Local-gov, Some-college,Married, White, Male,40, >50K
+60, Private, Bachelors, Divorced, White, Female,42, <=50K
+21, Private, HS-grad, Never-married, White, Male,40, <=50K
+57, Federal-gov, Masters,Married, White, Male,40, >50K
+41, Private, Prof-school,Married, White, Male,60, >50K
+50, Private, Some-college, Divorced, White, Male,45, <=50K
+25, Private, Bachelors, Never-married, White, Female,40, <=50K
+36, Private, Bachelors,Married, White, Male,45, <=50K
+31, Private, HS-grad, Divorced, White, Female,40, <=50K
+29, Local-gov, Bachelors, Never-married, White, Male,56, <=50K
+21, Private, Some-college, Never-married, White, Male,45, <=50K
+27, Private, Bachelors, Never-married, Black, Female,40, <=50K
+65, Private, HS-grad,Married, White, Male,16, <=50K
+24, Private, HS-grad, Never-married, White, Male,40, <=50K
+38, Private, HS-grad, Divorced, White, Male,80, <=50K
+48, Private, Bachelors,Married, White, Male,40, >50K
+21, Private, Some-college, Never-married, Asian-Pac-Islander, Female,25, <=50K
+31, Private, HS-grad,Married, White, Male,45, >50K
+55, Private, HS-grad,Married, White, Male,40, >50K
+24, Private, Some-college,Married, Asian-Pac-Islander, Female,40, <=50K
+43, Private, HS-grad, Divorced, White, Female,40, <=50K
+26, Private, Bachelors, Never-married, White, Male,40, <=50K
+34, Private, Masters,Married, Asian-Pac-Islander, Male,35, >50K
+22, Private, Some-college, Never-married, White, Male,15, <=50K
+24, Private, Some-college, Never-married, White, Male,40, <=50K
+29, Private, Some-college, Never-married, White, Female,40, <=50K
+62, Private, HS-grad, Widowed, White, Female,24, <=50K
+43, Private, Some-college,Married, White, Male,50, <=50K
+35, Private, HS-grad, Divorced, White, Male,45, <=50K
+43, Private, Some-college,Married, White, Female,50, >50K
+66, Private, HS-grad, Never-married, White, Male,55, <=50K
+41, Private, Some-college, Never-married, Black, Male,45, <=50K
+26, Private, Bachelors, Never-married, White, Male,40, <=50K
+53, Private, HS-grad,Married, White, Male,40, <=50K
+30, Private, HS-grad, Never-married, White, Male,40, <=50K
+49, Private, Masters, Never-married, White, Male,60, <=50K
+19, Private, HS-grad, Never-married, Black, Male,30, <=50K
+45, Private, HS-grad,Married, Black, Male,40, <=50K
+33, Private, HS-grad, Never-married, White, Male,20, <=50K
+31, Private, Bachelors, Never-married, White, Male,25, <=50K
+33, Private, Bachelors,Married, White, Male,40, >50K
+26, Private, HS-grad,Married, White, Male,40, <=50K
+33, Private, Bachelors,Married, White, Male,40, >50K
+38, Federal-gov, HS-grad,Married, White, Male,40, >50K
+42, Private, HS-grad,Married, White, Female,35, <=50K
+62, Private, Masters,Married, White, Male,40, >50K
+43, Private, Bachelors,Married, White, Male,45, <=50K
+43, Private, Bachelors, Divorced, White, Male,45, >50K
+22, Private, HS-grad,Married, White, Male,55, <=50K
+28, Private, HS-grad,Married, White, Male,40, <=50K
+57, Private, Bachelors, Divorced, White, Female,45, >50K
+39, Private, HS-grad, Divorced, White, Female,40, <=50K
+26, Federal-gov, Some-college, Never-married, White, Female,15, <=50K
+45, Private, HS-grad,Married, Black, Male,40, <=50K
+44, Private, HS-grad, Never-married, Black, Male,40, <=50K
+20, Local-gov, Some-college, Never-married, White, Female,10, <=50K
+33, Private, HS-grad,Married, White, Female,40, <=50K
+23, Private, Some-college, Never-married, White, Male,40, <=50K
+38, Private, HS-grad,Married, White, Male,50, <=50K
+54, Private, HS-grad, Divorced, White, Male,40, <=50K
+25, Private, Some-college,Married, White, Male,40, <=50K
+46, Private, Some-college, Divorced, White, Female,40, <=50K
+36, Local-gov, Some-college,Married, White, Female,40, <=50K
+23, Private, HS-grad, Never-married, White, Female,25, <=50K
+44, Private, Some-college,Married, White, Female,6, >50K
+19, Private, Some-college, Never-married, White, Female,16, <=50K
+19, Private, HS-grad, Never-married, White, Female,40, <=50K
+35, Private, HS-grad,Married, White, Female,40, >50K
+27, Private, Bachelors, Never-married, White, Male,50, <=50K
+34, Private, HS-grad, Never-married, White, Female,35, <=50K
+44, Private, Some-college,Married, White, Male,40, <=50K
+45, Private, Some-college, Divorced, White, Female,40, <=50K
+25, Private, Bachelors,Married, White, Male,55, >50K
+20, Private, Some-college, Never-married, White, Male,40, <=50K
+28, Private, Some-college, Never-married, White, Female,40, <=50K
+41, Private, Masters,Married, White, Male,65, >50K
+28, Private, HS-grad,Married, White, Male,40, <=50K
+32, Private, Some-college,Married, White, Male,50, <=50K
+41, Local-gov, Some-college, Divorced, Black, Female,24, <=50K
+24, Private, HS-grad, Never-married, Black, Female,40, <=50K
+33, Private, Some-college, Divorced, White, Female,40, <=50K
+46, Private, Doctorate,Married, White, Male,60, >50K
+20, Private, Some-college,Married, White, Male,30, <=50K
+29, Private, HS-grad, Divorced, White, Male,40, <=50K
+25, Private, HS-grad,Married, White, Male,60, <=50K
+36, Federal-gov, Masters, Never-married, White, Male,40, <=50K
+23, Private, HS-grad, Never-married, White, Male,72, <=50K
+47, Local-gov, Masters,Married, White, Male,40, <=50K
+27, Private, Some-college, Never-married, Asian-Pac-Islander, Male,40, <=50K
+33, Private, Masters,Married, White, Male,50, >50K
+34, Local-gov, HS-grad, Never-married, Black, Male,60, <=50K
+34, Local-gov, Some-college, Never-married, White, Female,40, <=50K
+23, Private, Some-college,Married, White, Male,40, <=50K
+42, Local-gov, Some-college,Married, White, Female,40, <=50K
+29, Private, Bachelors, Never-married, White, Male,40, <=50K
+45, Private, HS-grad, Divorced, White, Female,28, <=50K
+24, Federal-gov, HS-grad, Never-married, White, Male,40, <=50K
+44, Private, Some-college,Married, White, Male,40, >50K
+20, Private, Some-college, Never-married, White, Male,35, <=50K
+44, Private, HS-grad, Widowed, Black, Female,40, <=50K
+51, Private, HS-grad,Married, Amer-Indian-Eskimo, Male,40, <=50K
+20, Private, HS-grad,Married, White, Male,40, <=50K
+19, Private, HS-grad, Never-married, Black, Female,40, <=50K
+60, Private, HS-grad,Married, White, Male,40, >50K
+30, Private, HS-grad,Married, White, Female,40, <=50K
+38, Private, Some-college,Married, Black, Male,50, <=50K
+23, Private, HS-grad,Married, White, Male,60, <=50K
+54, Local-gov, HS-grad,Married, Black, Male,40, <=50K
+32, Private, Bachelors,Married, White, Male,50, <=50K
+24, Private, Bachelors, Never-married, White, Female,20, <=50K
+37, Private, HS-grad,Married, White, Female,60, <=50K
+52, Private, HS-grad, Divorced, White, Male,40, <=50K
+38, Private, Some-college,Married, White, Male,40, <=50K
+49, Private, Masters,Married, White, Male,45, >50K
+30, Private, Bachelors,Married, White, Female,16, >50K
+60, Private, Some-college, Never-married, White, Male,40, >50K
+35, Private, HS-grad, Never-married, White, Male,40, <=50K
+30, Private, HS-grad, Never-married, White, Male,60, <=50K
+46, Private, Bachelors, Never-married, White, Female,40, <=50K
+22, Private, Some-college, Never-married, White, Male,30, <=50K
+23, Private, HS-grad, Never-married, White, Female,35, <=50K
+41, Private, HS-grad,Married, White, Female,40, <=50K
+25, Private, Some-college,Married, Black, Female,20, <=50K
+59, Local-gov, HS-grad,Married, White, Male,45, <=50K
+45, Local-gov, Bachelors, Divorced, White, Female,40, <=50K
+38, Private, Bachelors,Married, White, Male,60, >50K
+40, Private, HS-grad, Never-married, White, Female,35, <=50K
+46, Federal-gov, HS-grad, Divorced, White, Male,40, <=50K
+34, Private, HS-grad, Divorced, White, Female,25, <=50K
+33, Private, Bachelors, Never-married, White, Male,20, <=50K
+41, Private, HS-grad, Divorced, White, Female,36, <=50K
+20, Private, Some-college, Never-married, White, Male,40, <=50K
+26, Private, Some-college, Never-married, White, Female,35, <=50K
+23, Local-gov, HS-grad, Never-married, White, Male,40, <=50K
+62, Local-gov, HS-grad,Married, White, Male,40, <=50K
+52, Private, Some-college,Married, White, Male,40, <=50K
+58, Private, Some-college, Divorced, White, Female,42, <=50K
+25, Private, Bachelors, Never-married, White, Female,40, <=50K
+24, Private, Bachelors, Never-married, Black, Male,40, <=50K
+19, Private, Some-college, Never-married, White, Male,8, <=50K
+43, Private, Some-college,Married, White, Male,40, <=50K
+39, Private, HS-grad, Divorced, White, Female,40, <=50K
+34, Private, Some-college,Married, White, Male,50, >50K
+28, Private, HS-grad, Divorced, White, Male,45, <=50K
+25, Private, Some-college, Never-married, Amer-Indian-Eskimo, Female,20, <=50K
+34, Private, Bachelors,Married, White, Male,50, >50K
+50, Private, HS-grad,Married, White, Male,50, >50K
+24, Local-gov, Some-college, Divorced, Black, Male,50, <=50K
+37, Local-gov, Some-college,Married, White, Male,45, >50K
+44, Private, Some-college, Divorced, White, Male,58, >50K
+28, Private, Some-college,Married, White, Female,40, <=50K
+42, Private, Bachelors,Married, White, Male,40, >50K
+74, Private, Some-college, Divorced, White, Female,9, <=50K
+26, Private, HS-grad, Never-married, White, Male,40, <=50K
+36, Private, HS-grad,Married, Black, Male,40, <=50K
+67, Private, Prof-school,Married, White, Male,48, >50K
+44, Private, Some-college,Married, White, Male,40, <=50K
+29, Private, Doctorate, Never-married, White, Male,40, <=50K
+30, Private, Some-college, Never-married, White, Female,40, <=50K
+27, Private, HS-grad, Never-married, White, Male,40, <=50K
+27, Private, Some-college,Married, White, Male,50, <=50K
+32, Private, HS-grad, Never-married, White, Female,45, <=50K
+35, Local-gov, Some-college,Married, White, Male,40, <=50K
+21, Private, HS-grad, Never-married, White, Male,36, <=50K
+28, Private, Some-college, Never-married, White, Male,40, <=50K
+35, Private, HS-grad,Married, Black, Female,40, <=50K
+35, Private, HS-grad,Married, White, Male,40, <=50K
+34, Private, HS-grad,Married, White, Female,32, <=50K
+28, Private, Bachelors, Never-married, White, Male,55, <=50K
+54, Private, Bachelors,Married, White, Male,35, >50K
+47, Private, Some-college,Married, White, Male,50, >50K
+24, Private, HS-grad, Never-married, Black, Female,40, <=50K
+20, Private, HS-grad, Never-married, Amer-Indian-Eskimo, Male,48, <=50K
+47, Private, Masters, Divorced, White, Male,42, <=50K
+24, Private, HS-grad, Never-married, White, Male,40, <=50K
+51, Private, HS-grad,Married, White, Male,40, <=50K
+27, Private, Doctorate, Never-married, White, Female,70, <=50K
+29, Private, Bachelors,Married, White, Male,40, >50K
+58, Local-gov, Bachelors, Never-married, White, Female,40, <=50K
+57, Private, HS-grad,Married, White, Male,40, >50K
+59, Private, HS-grad,Married, White, Male,40, <=50K
+27, Private, HS-grad,Married, White, Male,40, <=50K
+21, Private, Some-college, Never-married, White, Female,24, <=50K
+29, Private, Some-college, Never-married, White, Male,60, <=50K
+31, Private, Bachelors,Married, White, Male,40, >50K
+23, Private, Bachelors, Never-married, White, Female,40, <=50K
+27, Private, HS-grad, Never-married, White, Male,40, <=50K
+25, Private, Some-college, Never-married, White, Male,40, <=50K
+49, Private, Bachelors, Never-married, White, Female,45, <=50K
+32, Private, Bachelors, Never-married, White, Male,40, <=50K
+19, Private, Some-college, Never-married, White, Male,28, <=50K
+48, Private, HS-grad, Never-married, Black, Female,37, <=50K
+51, Private, Masters,Married, White, Male,40, >50K
+29, Private, HS-grad, Never-married, Amer-Indian-Eskimo, Male,40, <=50K
+52, Private, Masters, Divorced, White, Female,60, <=50K
+24, Private, HS-grad, Never-married, White, Male,40, <=50K
+24, Private, HS-grad,Married, White, Male,50, <=50K
+26, Local-gov, Bachelors, Never-married, White, Male,40, <=50K
+27, Private, Bachelors, Never-married, White, Female,20, <=50K
+39, Private, HS-grad, Never-married, White, Male,60, <=50K
+30, Private, HS-grad,Married, Black, Male,45, <=50K
+46, Private, Prof-school,Married, White, Male,45, >50K
+23, Private, Bachelors, Never-married, White, Female,20, <=50K
+30, Private, HS-grad, Never-married, Black, Male,60, <=50K
+34, Private, HS-grad,Married, White, Male,45, >50K
+33, Private, Some-college,Married, White, Male,40, >50K
+49, Private, Bachelors,Married, White, Male,26, >50K
+43, Private, Some-college,Married, White, Male,60, >50K
+30, Private, Bachelors,Married, Black, Female,40, >50K
+19, Private, HS-grad, Never-married, White, Female,14, <=50K
+21, Private, Bachelors, Never-married, White, Male,40, <=50K
+33, Private, Bachelors,Married, White, Male,60, >50K
+26, Private, HS-grad, Divorced, White, Male,55, <=50K
+60, Private, HS-grad,Married, White, Male,40, <=50K
+21, Private, Some-college, Never-married, White, Male,40, <=50K
+36, Private, Some-college,Married, White, Male,50, >50K
+31, Private, Some-college,Married, White, Male,45, <=50K
+31, Local-gov, HS-grad, Divorced, White, Female,40, <=50K
+71, Private, HS-grad,Married, White, Male,15, <=50K
+20, Private, Some-college, Never-married, White, Male,20, <=50K
+24, Private, HS-grad, Never-married, White, Male,50, <=50K
+35, Private, Doctorate,Married, Asian-Pac-Islander, Male,40, >50K
+27, Private, HS-grad, Never-married, White, Female,32, <=50K
+34, Private, HS-grad,Married, White, Male,45, <=50K
+43, Private, HS-grad,Married, White, Male,40, >50K
+35, Private, Masters, Never-married, White, Male,60, <=50K
+27, Private, Some-college, Never-married, White, Male,40, <=50K
+43, Local-gov, Masters, Never-married, White, Male,38, <=50K
+20, Private, Some-college, Never-married, White, Female,25, <=50K
+42, Private, HS-grad,Married, Black, Male,40, >50K
+48, Federal-gov, Some-college, Divorced, White, Male,40, <=50K
+33, Private, Bachelors,Married, White, Male,40, >50K
+22, Private, HS-grad, Never-married, White, Female,40, <=50K
+32, Private, Some-college,Married, White, Male,40, <=50K
+31, Private, HS-grad, Never-married, White, Male,45, <=50K
+29, Local-gov, HS-grad, Never-married, White, Male,48, <=50K
+34, Private, HS-grad, Divorced, White, Female,40, <=50K
+45, Local-gov, Bachelors,Married, White, Female,55, <=50K
+41, Private, Masters, Never-married, White, Male,35, <=50K
+26, Private, HS-grad, Never-married, White, Male,30, <=50K
+54, Local-gov, Some-college,Married, White, Male,40, <=50K
+24, Private, Some-college, Never-married, Black, Female,45, <=50K
+42, Private, Some-college,Married, White, Male,50, <=50K
+20, Private, Some-college, Never-married, White, Male,20, <=50K
+35, Private, Masters, Never-married, White, Male,60, >50K
+31, Private, Masters,Married, White, Male,40, >50K
+30, Private, Bachelors, Never-married, White, Female,40, <=50K
+19, Private, HS-grad, Never-married, White, Female,20, <=50K
+36, Local-gov, Bachelors, Never-married, White, Male,50, <=50K
+31, Private, Bachelors, Widowed, White, Female,40, <=50K
+21, Private, Some-college, Never-married, White, Male,30, <=50K
+46, Private, Doctorate, Divorced, White, Female,65, >50K
+44, Private, Bachelors, Divorced, White, Female,50, >50K
+45, Private, Some-college, Never-married, Black, Male,40, <=50K
+60, Private, HS-grad,Married, White, Male,35, <=50K
+28, Private, Bachelors,Married, White, Male,40, <=50K
+36, Private, Some-college, Divorced, Black, Female,40, <=50K
+36, Local-gov, Bachelors, Divorced, White, Female,35, <=50K
+33, Private, HS-grad,Married, White, Male,40, <=50K
+22, Private, Some-college, Never-married, White, Female,15, <=50K
+34, Private, Bachelors,Married, White, Male,45, >50K
+33, Private, HS-grad, Never-married, White, Male,40, <=50K
+41, Private, HS-grad,Married, White, Male,60, <=50K
+29, Private, Bachelors, Never-married, White, Male,40, <=50K
+50, Local-gov, HS-grad,Married, White, Male,42, >50K
+42, Private, Bachelors,Married, White, Male,45, >50K
+43, Private, Bachelors, Never-married, White, Male,40, >50K
+44, Private, HS-grad,Married, White, Female,40, <=50K
+20, Private, Some-college, Never-married, White, Female,20, <=50K
+31, Private, HS-grad,Married, White, Male,40, <=50K
+23, Private, Some-college, Never-married, White, Female,24, <=50K
+55, Private, Some-college, Divorced, Asian-Pac-Islander, Female,40, <=50K
+35, Private, Some-college,Married, White, Male,40, <=50K
+36, Private, Some-college, Never-married, Black, Female,36, <=50K
+56, Private, HS-grad, Widowed, Black, Female,20, <=50K
+42, Private, Bachelors,Married, White, Male,40, >50K
+19, Private, Some-college, Never-married, White, Female,25, <=50K
+42, Private, Masters, Never-married, White, Female,50, >50K
+42, Local-gov, Bachelors,Married, White, Female,40, >50K
+55, Private, HS-grad,Married, White, Male,40, >50K
+32, Private, Some-college, Never-married, Black, Female,40, <=50K
+22, Private, Bachelors, Never-married, White, Male,20, <=50K
+23, Private, HS-grad, Never-married, White, Male,50, <=50K
+39, Private, HS-grad, Never-married, White, Male,40, <=50K
+54, Private, HS-grad,Married, White, Male,40, >50K
+33, Local-gov, Bachelors, Never-married, White, Female,45, <=50K
+46, Federal-gov, HS-grad,Married, White, Female,40, >50K
+37, Private, HS-grad, Never-married, Black, Male,40, <=50K
+36, Private, HS-grad, Never-married, White, Female,18, <=50K
+59, Local-gov, HS-grad,Married, White, Female,38, >50K
+34, Local-gov, HS-grad, Divorced, White, Male,40, <=50K
+51, Private, Bachelors, Never-married, White, Male,55, >50K
+22, Private, Some-college,Married, White, Female,30, <=50K
+32, Private, HS-grad, Never-married, White, Male,40, <=50K
+26, Private, Some-college, Never-married, White, Female,38, <=50K
+31, Private, HS-grad, Divorced, White, Male,55, <=50K
+55, Private, HS-grad, Never-married, White, Male,38, <=50K
+36, Private, Some-college, Divorced, White, Female,40, <=50K
+34, Private, Masters,Married, White, Male,40, <=50K
+43, Private, Bachelors,Married, White, Male,50, >50K
+54, Private, Some-college, Never-married, White, Male,40, <=50K
+40, Private, Bachelors, Never-married, Other, Female,55, >50K
+42, Private, Some-college, Divorced, Black, Female,38, <=50K
+23, Private, HS-grad, Never-married, White, Female,40, <=50K
+60, Private, HS-grad,Married, White, Male,60, >50K
+22, Private, Some-college, Never-married, Black, Male,20, <=50K
+61, Private, HS-grad,Married, White, Male,40, <=50K
+25, Private, HS-grad, Never-married, Black, Male,40, <=50K
+46, Private, Masters, Never-married, White, Male,35, >50K
+43, Private, Bachelors,Married, White, Male,40, >50K
+24, Private, HS-grad, Never-married, Black, Male,30, <=50K
+31, Private, HS-grad, Divorced, White, Female,38, <=50K
+32, Private, HS-grad,Married, White, Male,48, >50K
+33, Private, Bachelors,Married, White, Male,47, >50K
+64, Private, Bachelors,Married, White, Male,40, >50K
+20, Private, HS-grad, Never-married, White, Male,30, <=50K
+43, Private, Some-college, Divorced, White, Male,45, <=50K
+22, Private, Some-college, Never-married, White, Male,40, <=50K
+56, Private, Some-college,Married, White, Male,50, >50K
+64, Private, HS-grad,Married, White, Male,45, <=50K
+47, Private, HS-grad,Married, White, Male,50, >50K
+31, Private, Masters, Never-married, White, Female,46, <=50K
+30, Private, HS-grad, Widowed, White, Female,40, <=50K
+32, Private, HS-grad,Married, White, Male,60, <=50K
+57, Private, HS-grad, Widowed, White, Male,42, >50K
+62, Private, HS-grad, Widowed, White, Female,40, <=50K
+43, Private, Some-college, Never-married, White, Male,25, <=50K
+53, Private, Some-college,Married, White, Female,40, >50K

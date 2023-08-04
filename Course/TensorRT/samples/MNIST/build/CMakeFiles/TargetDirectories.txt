@@ -1,3 +1,0 @@
-/home/jun/Github/ML-Learning/Course/TensorRT/MNIST/build/CMakeFiles/rebuild_cache.dir
-/home/jun/Github/ML-Learning/Course/TensorRT/MNIST/build/CMakeFiles/edit_cache.dir
-/home/jun/Github/ML-Learning/Course/TensorRT/MNIST/build/CMakeFiles/mnist_sample.dir
