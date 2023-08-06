@@ -21,7 +21,7 @@ class ImageDataset(Dataset):
             self.files_B = sorted(glob.glob(root_dir + '/trainB' + '/*.*'))
         elif mode == 'test':
             self.files_A = sorted(glob.glob(root_dir + '/testA' + '/*.*'))
-            self.files_B = sorted(glob.glob(root_dir + '/testA' + + '/*.*'))
+            self.files_B = sorted(glob.glob(root_dir + '/testA' + '/*.*'))
 
         # print(root_dir)
 
