@@ -60,7 +60,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='cgan', help='one of `cgan` and `infogan`.')
     parser.add_argument('--cuda', type=boolean_string, default=True, help='enable CUDA.')
     parser.add_argument('--train', type=boolean_string, default=True, help='train mode or eval mode.')
-    parser.add_argument('--data_dir', type=str, default='~/Data/mnist', help='Directory for dataset.')
+    parser.add_argument('--data_dir', type=str, default='~/Data/FashionMNIST', help='Directory for dataset.')
     parser.add_argument('--dataset', type=str, default='FashionMNIST', help='Dataset name.')
     parser.add_argument('--out_dir', type=str, default='output', help='Directory for output.')
     parser.add_argument('--epochs', type=int, default=200, help='number of epochs')
