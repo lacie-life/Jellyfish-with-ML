@@ -270,7 +270,7 @@ if __name__ == '__main__':
                     'squeezenet1_1', 'densenet121', 'googlenet', 'resnext50_32x4d',
                     'vgg11']
     parser = argparse.ArgumentParser(description='Learnable GANs Examples')
-    parser.add_argument('--model', type=str, default='resnet18', help='one of {}'.format(legal_models))
+    parser.add_argument('--model', type=str, default='mobilenet_v2', help='one of {}'.format(legal_models))
     parser.add_argument('--cuda', type=boolean_string, default=True, help='enable CUDA.')
     parser.add_argument('--train_single', type=boolean_string, default=True, help='train single model.')
     parser.add_argument('--train_ensemble', type=boolean_string, default=True, help='train final model.')
