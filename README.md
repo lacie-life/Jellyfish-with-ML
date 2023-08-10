@@ -20,3 +20,16 @@ https://cs231n.github.io/
 - <b>Model training-specific hyperparameters:</b> These are parameters that are not learned by the network. They are set by the user and are used to control the training process. <i>(Learning rate, Number of epochs, Batch size)</i>
 
 - <b>Network architecture-specific hyperparameters:</b> These are parameters that are not learned by the network. They are set by the user and are used to control the architecture of the network. <i>(Number of hidden layers, Number of neurons in each layer, Regularization, Activation function)</i>
+
+- <b>Confusion matrix:</b> This is a table that is used to describe the performance of a classification model. It shows the number of correct and incorrect predictions made by the classification model compared to the actual outcomes. <i>(Accuracy, Precision, Recall, F1 score)</i>
+
+## Convolutional filter
+
+- Kernel/filter size: size of the filter
+- Depth: number of filters/kernels
+- Stride: number of pixels to slide
+- Zero padding: add zeros to the border of the image
+
+
+
+
