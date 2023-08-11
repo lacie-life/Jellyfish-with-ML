@@ -320,6 +320,69 @@ The aforementioned problem can be easily avoided by including the mesh edge loss
 
 [Implementing the mesh fitting with PyTorch3D](./meshesFitting/)
 
+## 2. Object Pose Detection and Tracking by Differentiable Rendering <a name="c3.2"></a>
+
+### 2.1. Why we want to have differentiable rendering <a name="c3.2.1"></a>
+
+The physical process of image formation is a mapping from 3D models to 2D images. As shown in the example in Figure below, depending on the positions of the red and blue spheres in 3D (two possible configurations are shown on the left-hand side), we may get different 2D images (the images corresponding to the two configurations are shown on the right-hand side).
+
+![Image](/Course/Theory/3D-DeepLearning/image/mapping3Dto2D.png)
+
+Many 3D computer vision problems are a reversal of image formation. In these problems, we are usually given 2D images and need to estimate the 3D models from the 2D images. For example, in Figure below, we are given the 2D image shown on the right-hand side and the question is, which 3D model is the one that corresponds to the observed image?
+
+![Image](/Course/Theory/3D-DeepLearning/image/mapping2Dto3D.png)
+
+According to some ideas that were first discussed in the computer vision community decades ago, we can formulate the problem as an optimization problem. In this case, the optimization variables here are the position of two 3D spheres. We want to optimize the two centers, such that the rendered images are like the preceding 2D observed image. To measure similarity precisely, we need to use a cost function – for example, we can use pixel-wise mean-square errors. We then need to compute a gradient from the cost function to the two centers of spheres, so that we can minimize the cost function iteratively by going toward the gradient descent direction.
+
+However, we can calculate a gradient from the cost function to the optimization variables only under the condition that the mapping from the optimization variables to the cost functions is differentiable, which implies that the rendering process is also differentiable.
+
+### 2.2. How to make rendering differentiable <a name="c3.2.2"></a>
+
+Rendering is an imitation of the physical process of image formation. This physical process of image formation itself is differentiable in many cases. Suppose that the surface is normal and the material properties of the object are all smooth. Then, the pixel color in the example is a differentiable function of the positions of the spheres.
+
+However, there are cases where the pixel color is not a smooth function of the position. This can happen at the occlusion boundaries, for example. This is shown in Figure 4.3, where the blue sphere is at a location that would occlude the red sphere at that view if the blue sphere moved up a little bit. The pixel moved at that view is thus not a differentiable function of the sphere center locations.
+
+![Image](/Course/Theory/3D-DeepLearning/image/occlusion.png)
+
+When we use conventional rendering algorithms, information about local gradients is lost due to discretization. As we discussed in the previous section, rasterization is a step of rendering where for each pixel on the imaging plane, we find the most relevant mesh face (or decide that no relevant mesh face can be found).
+
+In conventional rasterization, for each pixel, we generate a ray from the camera center going through the pixel on the imaging plane. We will find all the mesh faces that intersect with this ray. In the conventional approach, the rasterizer will only return the mesh face that is nearest to the camera. The returned mesh face will then be passed to the shader, which is the next step of the rendering pipeline. The shader will then be applied to one of the shading algorithms (such as the Lambertian model or Phong model) to determine the pixel color. This step of choosing the mesh to render is a non-differentiable process, since it is mathematically modeled as a step function.
+
+There has been a large body of literature in the computer vision community on how to make rendering differentiable.
+The differentiable rendering implemented in the PyTorch3D library mainly used the approach in <b>Soft Rasterizer</b> by Liu, Li, Chen, and Li (arXiv:1904.01786).
+
+The main idea of differentiable rendering is illustrated in Figure below. In the rasterization step, instead of returning only one relevant mesh face, we will find all the mesh faces, such that the distance of the mesh face to the ray is within a certain threshold.
+
+![Image](/Course/Theory/3D-DeepLearning/image/differentableRendering.png)
+
+<b>What problems can be solved by using differentiable rendering?</b>
+
+Differentiable rendering is a technique in that we can formulate the estimation problems in 3D computer vision into optimization problems. It can be applied to a wide range of problems. More interestingly, one exciting recent trend is to combine differentiable rendering with deep learning. Usually, differentiable rendering is used as the generator part of the deep learning models. The whole pipeline can thus be trained end to end.
+
+
+### 2.3. The object pose estimation problem <a name="c3.2.3"></a>
+
+In this section, we are going to show a concrete example of using differentiable rendering for 3D computer vision problems. The problem is object pose estimation from one single observed image. In addition, we assume that we have the 3D mesh model of the object.
+
+For example, we assume we have the 3D mesh model for a toy cow, as shown in Figure 2.3.1. Now, suppose we have taken one image of the toy cow (Figure 2.3.2). The problem is then to estimate the orientation and location of the toy cow at the moments when these images are taken.
+
+![Image](/Course/Theory/3D-DeepLearning/image/cow1.png)
+
+![Image](/Course/Theory/3D-DeepLearning/image/cow2.png)
+
+Because it is cumbersome to rotate and move the meshes, we choose instead to fix the orientations and locations of the meshes and optimize the orientations and locations of the cameras. By assuming that the camera orientations are always pointing toward the meshes, we can further simplify the problem, such that all we need to optimize is the camera locations.
+
+Thus, we formulate our optimization problem, such that the optimization variables will be the camera locations. By using differentiable rendering, we can render RGB images and silhouette images for the two meshes. The rendered images are compared with the observed images and, thus, loss functions between the rendered images and observed images can be calculated. Here, we use mean-square errors as the loss function. Because everything is differentiable, we can then compute gradients from the loss functions to the optimization variables. Gradient descent algorithms can then be used to find the best camera positions, such that the rendered images are matched to the observed images.
+
+[Code Implementation](./objectPoseEstimation/)
+
+
+
+
+
+
+
+
 
 
 
