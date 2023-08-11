@@ -64,7 +64,7 @@ In most data-driven applications, meshes are a result of post-processing from ra
 
 Just like point clouds, meshes also have similar heterogeneous data issues.
 
-![Image](https://www.researchgate.net/publication/322096576/figure/fig2/AS:631626539229214@1527602910310/3D-mesh-triangles-with-different-resolution-3D-Modelling-for-programmers-Available-at.png)
+![Image](https://upload.wikimedia.org/wikipedia/commons/f/fb/Dolphin_triangle_mesh.png)
 
 ### 1.3. Voxel representation <a name="1.3"></a>
 
