@@ -119,13 +119,13 @@ end_header
 3 5 0 4
 ```
 
-[Example of a PLY file](./Course/Theory/3D-DeepLearning/Introduction/ply_io/)
+[Example of a PLY file](./Course/Theory/3D-DeepLearning/Introduction/ply_io/README.md)
 
 ### 2.2. Obj files <a name="2.2"></a>
 
 Obj files are another commonly used file format for meshes. They are also text-based and human-readable. 
 
-[Example of a Obj file](./Course/Theory/3D-DeepLearning/Introduction/obj_io/)
+[Example of a Obj file](./Course/Theory/3D-DeepLearning/Introduction/obj_io/README.md)
 
 ## 3. 3D Coordinate Systems <a name="3"></a>
 
@@ -152,6 +152,6 @@ To render the 3D object correctly on our 2D screens, we need to switch between t
 
 The orthographic cameras use orthographic projections to map objects in the 3D world to 2D images, while the perspective cameras use perspective projections to map objects in the 3D world to 2D images. The orthographic projections map objects to 2D images, disregarding the object depth. For example, just as shown in the figure, two objects with the same geometric size at different depths would be mapped to 2D images of the same size. On the other hand, in perspective projections, if an object moved far away from the camera, it would be mapped to a smaller size on the 2D images.
 
-[Example of a Camera model](./Course/Theory/3D-DeepLearning/Introduction/camera/)
+[Example of a Camera model](./Course/Theory/3D-DeepLearning/Introduction/camera/README.md)
 
 # II. Introduction - 3D Computer Vision and Geometry <a name="intro2"></a> 
