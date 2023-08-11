@@ -18,21 +18,25 @@ conda install pytorch3d -c pytorch3d
 
 I. [Introduction - 3D Data processing](#intro1)
 
-    1. [3D data representation](#1)
+1. [3D data representation](#1)
 
-        1.1. [Point cloud representation](#1.1)
-        1.2. [Mesh representation](#1.2)
-        1.3. [Voxel representation](#1.3)
-
-    2. [3D data file formats](#1.2)
-
-        2.1. [Ply files](#2.1)
-        2.2. [Obj files](#2.2)
-
-    3. [3D Coordinate Systems](#1.3)
+    1.1. [Point cloud representation](#1.1)
     
-        3.1. [World coordinate system](#3.1)
-        3.2. [Normalized device coordinate (NDC)](#3.2)
+    1.2. [Mesh representation](#1.2)
+    
+    1.3. [Voxel representation](#1.3)
+
+2. [3D data file formats](#1.2)
+
+    2.1. [Ply files](#2.1)
+    
+    2.2. [Obj files](#2.2)
+
+3. [3D Coordinate Systems](#1.3)
+    
+    3.1. [World coordinate system](#3.1)
+    
+    3.2. [Normalized device coordinate (NDC)](#3.2)
 
 II. [Introduction - 3D Computer Vision and Geometry](#intro2)
 
