@@ -717,5 +717,117 @@ where people are connected to friends and family.
 This idea is at the core of the DeepWalk algorithm: when nodes are close to each other, we want to
 obtain high similarity scores. On the contrary, we want low scores when they are farther apart.
 
+## Part 2: Fundamentals
+
+### 4. Improving Embeddings with Biased Random Walks in Node2Vec
+
+### 4.1. Introducing Node2Vec
+
+
+Node2Vec was introduced in 2016 by Grover and Leskovec from Stanford University [1]. It keeps the
+same two main components from DeepWalk: random walks and Word2Vec. The difference is that
+instead of obtaining sequences of nodes with a uniform distribution, the random walks are carefully
+biased in Node2Vec. We will see why these biased random walks perform better and how to implement
+them in the two following sections:
+
+- Defining a <b> neighborhood </b>
+- Implementing biased random walks
+
+Let’s start by questioning our intuitive concept of neighborhoods.
+
+### 4.1.1. Defining a neighborhood
+
+How do you define the neighborhood of a node? The key concept introduced in Node2Vec is the
+flexible notion of a neighborhood. Intuitively, we think of it as something close to the initial node,
+but what does “close” mean in the context of a graph? Let’s take the following graph as an example:
+
+![Figure 4.1](imgs/figure_4_1.png)
+
+We want to explore three nodes in the neighborhood of node <b> A </b>. This exploration process is also called
+a <b> sampling strategy </b>:
+
+- A possible solution would be to consider the three closes nodes in terms of connections. In this case, the neighborhood of $A$, noted $N(A)$, would be $N(A) = \{B, C, D\}$.
+
+- Another possible sampling strategy consists of selecting nodes that are not adjacent to previous nodes first. In our example, the neighbnorhood of $A$ would be $N(A) = \{B, D, E\}$. 
+
+In other words, we want to implement a <b> Breadth-First Search (BFS) </b> in the first case and a <b> Depth-First Search (DFS) </b> in the second one.
+
+What is important to notice here is that these sampling strategies have opposite behaviors: BFS
+focuses on the local network around a node while DFS establishes a more macro view of the graph.
+Considering our intuitive definition of a neighborhood, it is tempting to simply discard DFS. However,
+Node2Vec’s authors argue that this would be a mistake: each approach captures a different but valuable
+representation of the network.
+
+They make a connection between these algorithms and two network properties:
+
+• <b> Structural equivalence </b>, which means that nodes are structurally equivalent if they share many of the same neighbors. So, if they share many neighbors, their structural equivalence is higher.
+
+• <b> Homophily </b>, as seen previously, states that similar nodes are more likely to be connected.
+
+They argue that BFS is ideal to emphasize structural equivalence since this strategy only looks at
+neighboring nodes. In these random walks, nodes are often repeated and stay close to each other. DFS,
+on the other hand, emphasizes the opposite of homophily by creating sequences of distant nodes. These
+random walks can sample nodes that are far from the source and thus become less representative. This
+is why we’re looking for a trade-off between these two properties: homophily may be more helpful for
+understanding certain graphs and vice versa.
+
+If you’re confused about this connection, you’re not alone: several papers and blogs wrongly assume
+that BFS emphasizes homophily and DFS is connected to structural equivalence. In any case, we
+consider graphs that combine homophily and structural equivalence to be the desired solution. This
+is why, regardless of these connections, we want to use both sampling strategies to create our dataset.
+
+Let’s see how we can implement them to generate random walks.
+
+### 4.1.2. Introducing biases in random walks
+
+As a reminder, random walks are sequences of nodes that are randomly selected in a graph. They have
+a starting point, which can also be random, and a predefined length. Nodes that often appear together
+in these walks are like words that appear together in sentences: under the homophily hypothesis, they
+share a similar meaning, hence a similar representation.
+
+In Node2Vec, our goal is to bias the randomness of these walks to either one of the following:
+
+- Promoting nodes that are not connected to the previous one (similar to DFS)
+- Promoting nodes that are close to the previous one (similar to BFS)
+
+Let's take figure 4.2 as an example. The current node is called $j$, the previous node is $i$, and the future node is $k$. We node $\pi_{jk}$, the unnormalized transition probability from $j$ to $k$. This probability can be decomposed as  $\pi_{jk} = \alpha(j, k) . \omega_{jk} $, where $\alpha(j, k)$ is the serach bias between nodes $i$ and $k$ and $\omega_{jk}$ is the wight of the edge from $j$ to $k$.
+
+
+![Figure 4.2](imgs/figure_4_2.png)
+
+In DeepWalk, we have $\alpha(a, b) = 1$ for any pair of nodes $a$ and $b$. In Node2Vec, the value of $\alpha(a, b)$
+is defined based on the distance between the nodes and two additional parameters: $p$ , the return
+parameter, and $q$, the in-out parameter. Their role is to approximate DFS and BFS, respectively.
+
+Here is how the value of $\alpha(a, b)$ is defined:
+
+![Figure 4.3](imgs/figure_4_3.png)
+
+Here, $d_{ab}$
+is the shortest path distance between nodes $a$ and $b$. We can update the unnormalized
+transition probability from the previous graph as follows:
+
+![Figure 4.4](imgs/figure_4_4.png)
+
+Let’s decrypt these probabilities:
+
+• The walk starts from node $i$ and now arrives at node $j$ . The probability of going back to the
+previous node $i$ is controlled by the parameter $p$. The higher it is, the more the random walk
+will explore new nodes instead of repeating the same ones and looking like DFS.
+
+• The unnormalized probability of going to $k_1$ is 1 because this node is in the immediate neighborhood of our previous node, $i$.
+
+• Finally, the probability of going to node $k_2$ is controlled by the parameter $p$. The higher it is, the more the random walk will focus on nodes that are close to the previous one and look like BFS.
+
+The best way to understand this is to actually implement this architecture and play with the
+parameters. Let’s do it step by step on Zachary’s Karate Club, 
+as shown in Figure 4.4:
+
+![Figure 4.4](imgs/figure_4_5.png)
+
+Note that it is an unweighted network, which is why the transition probability is only determined by
+the search bias.
+
+### 4.2. Implementing Node2Vec
 
 
