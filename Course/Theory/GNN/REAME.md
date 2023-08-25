@@ -830,4 +830,326 @@ the search bias.
 
 ### 4.2. Implementing Node2Vec
 
+[Code](./code/04-node2vec.ipynb)
+
+### 5. Including Node Features with Vanilla Neural Networks
+
+### 5.1. Introducing graph datasets
+
+The graph datasets we’re going to use in this chapter are richer than Zachary’s Karate Club: they have
+more nodes, more edges, and include node features. In this section, we will introduce them to give
+us a good understanding of these graphs and how to process them with PyTorch Geometric. Here
+are the two datasets we will use:
+
+- <b> Cora </b>
+- <b> Facebook Page-Page </b>
+
+### 5.1.1. Cora
+
+Introduced by Sen et al. in 2008 [1], Cora (no license) is the most popular dataset for node classification
+in the scientific literature. It represents a network of 2,708 publications, where each connection is a
+reference. Each publication is described as a binary vector of 1,433 unique words, where 0 and 1
+indicate the absence or presence of the corresponding word, respectively. This representation is also
+called a binary <b> bag of words </b> in natural language processing. Our goal is to classify each node into
+one of seven categories.
+
+Regardless of the type of data, visualization is always an important step to getting a good grasp of the
+problem we face. However, graphs can quickly become too big to visualize using Python libraries such
+as networkx. This is why dedicated tools have been developed specifically for graph data visualization.
+In this section, we utilize two of the most popular ones: [yEd Live](https://www.yworks.com/yed-live/) and [Gephi](https://gephi.org/).
+
+The following figure is a plot of the Cora dataset made with yEd Live. You can see nodes corresponding
+to papers in orange and connections between them in green. Some papers are so interconnected that
+they form clusters. These clusters should be easier to classify than poorly connected nodes.
+
+![Figure 5.1](imgs/figure_5_1.png)
+
+### 5.1.2. Facebook Page-Page
+
+This dataset was introduced by Rozemberczki et al. in 2019. It was created using the Facebook Graph
+API in November 2017. In this dataset, each of the 22,470 nodes represents an official Facebook page.
+Pages are connected when there are mutual likes between them. Node features (128-dim vectors) are created from textual descriptions written by the owners of these pages. Our goal is to classify each node
+into one of four categories: politicians, companies, television shows, and governmental organizations.
+
+The Facebook Page-Page dataset is similar to the previous one: it’s a social network with a node
+classification task. However, there are three major differences with Cora:
+
+• The number of nodes is much higher (2,708 versus 22,470)
+
+• The dimensionality of the node features decreased dramatically (from 1,433 to 128)
+
+• The goal is to classify each node into four categories instead of seven (which is easier since
+there are fewer options)
+
+The following figure is a visualization of the dataset using Gephi. First, nodes with few connections
+have been filtered out to improve performance. The size of the remaining nodes depends on their
+number of connections, and their color indicates the category they belong to. Finally, two layouts have
+been applied: Fruchterman-Reingold and ForceAtlas2.
+
+![Figure 5.2](imgs/figure_5_2.png)
+
+### 5.2. Classifying nodes with vanilla neural networks
+
+Compared to Zachary’s Karate Club, these two datasets include a new type of information: node
+features. They provide additional information about the nodes in a graph, such as a user’s age, gender,
+or interests in a social network. In a vanilla neural network (also called <b> multilayer perceptron </b>), these
+embeddings are directly used in the model to perform downstream tasks such as node classification.
+
+.....
+
+### 5.3. Classifying nodes with vanilla graph neural networks
+
+Instead of directly introducing well-known GNN architectures, let’s try to build our own model to
+understand the thought process behind GNNs. First, we need to go back to the definition of a simple
+linear layer.
+
+A basic neural network layer corresponds to a linear transformation $ℎ_A = x_A W^T $, where $x_A$
+is the input vector of node $A$ and $W$ is the weight matrix. In PyTorch, this equation can be implemented with the torch.mm() function, or with the nn.Linear class that adds other parameters such as biases.
+
+With our graph datasets, the input vectors are node features. It means that nodes are completely
+separate from each other. This is not enough to capture a good understanding of the graph: like a
+pixel in an image, the context of a node is essential to understand it. If you look at a group of pixels
+instead of a single one, you can recognize edges, patterns, and so on. Likewise, to understand a node,
+you need to look at its neighborhood.
+
+
+Let's call $N_A$ the set of neighbors of node $A$. Our <b> graph linear layer </b> can be written as follows:
+
+![Figure 5.3](imgs/figure_5_3.png)
+
+You can imagine several variants of this equation. For instance, we could have a weight matrix $W_1$
+dedicated to the central node, and another one $W_2$ for the neighbors. Note that we cannot have a
+weight matrix per neighbor, as this number can change from node to node.
+
+We’re talking about neural networks, so we can’t apply the previous equation to each node. Instead,
+we perform matrix multiplications that are much more efficient. For instance, the equation of the
+linear layer can be rewritten as $H = XW^T$ 
+, where $X$ is the input matrix.
+
+In our case, the adjacency matrix $A$ contains the connections between every node in the graph.
+Multiplying the input matrix by this adjacency matrix will directly sum up the neighboring node
+features. We can add self loops to the adjacency matrix so that the central node is also considered
+in this operation. We call this updated adjacency matrix $Ã = A + I$ . Our graph linear layer can be
+rewritten as follows:
+
+![Figure 5.4](imgs/figure_5_4.png)
+
+[Code](./05-vanilla_gnn.ipynb)
+
+### 6. Introducing Graph Convolutional Networks
+
+The <b> Graph Convolutional Network (GCN) </b> architecture is the blueprint of what a GNN looks like.
+Introduced by Kipf and Welling in 2017, it is based on the idea of creating an efficient variant of
+<b> Convolutional Neural Networks (CNNs) </b> applied to graphs. More accurately, it is an approximation of
+a graph convolution operation in graph signal processing. Thanks to its versatility and ease of use, the
+GCN has become the most popular GNN in scientific literature. More generally, it is the architecture
+of choice to create a solid baseline when dealing with graph data.
+
+### 6.1. Designing the graph convolutional layer
+
+First, let’s talk about a problem we did not anticipate in the previous chapter. Unlike tabular or image
+data, nodes do not always have the same number of neighbors. For instance, in Figure 6.1, node 1 has
+3 neighbors while node 2 only has 1:
+
+![Figure 6.1](imgs/figure_6_1.png)
+
+However, if we look at our GNN layer, we don’t take into account this difference in the number of
+neighbors. Our layer consists of a simple sum without any normalization coefficient. Here is how we
+calculated the embedding of a node, $i$:
+
+![Figure 6.2](imgs/figure_6_2.png)
+
+Imagine that node 1 has 1,000 neighbors and node 2 only has 1: the embedding $ℎ_A$ will have much
+larger values than $ℎ_B$ . This is an issue because we want to compare these embeddings. How are we
+supposed to make meaningful comparisons when their values are so vastly different?
+
+Fortunately, there is a simple solution: dividing the embedding by the number of neighbors. Let’s write $deg(A)$ , the degree of node $A$ . Here is the new formula for the GNN layer:
+
+![Figure 6.3](imgs/figure_6_3.png)
+
+But how do we translate it into a matrix multiplication? As a reminder, this was what we obtained
+for our vanilla GNN layer:
+
+![Figure 6.4](imgs/figure_6_4.png)
+
+Here, $Ã = A + I$.
+
+The only thing that is missing from this formula is a matrix to give us the normalization coefficient, $\frac{1}{deg(i)}$. This is something that can be obtained thanks to the degree matrix $D$ which counts the number
+of neighbors for each node. Here is the degree matrix for the graph shown in Figure 6.1:
+
+![Figure 6.5](imgs/figure_6_5.png)
+
+By definition, $D$ gives us the degree of each node, $deg(i)$. Therefore, the inverse of this matrix $D^{-1}$ directly gives us the normalization coefficents, $\frac{1}{deg(i)}$:
+
+![Figure 6.6](imgs/figure_6_6.png)
+
+![Figure 6.7](imgs/figure_6_7.png)
+
+Now that we have our matrix of normalization coefficients, where should we put it in the formula?
+There are two options:
+
+![Figure 6.8](imgs/figure_6_8.png)
+
+Indeed, in the first case, the sum of every row is equal to 1. In the second case, the sum of every
+column is equal to 1.
+
+Naturally, the first option looks more appealing because it nicely
+normalizes neighboring node features.
+
+However, Kipf and Welling noticed that features from nodes with a lot of neighbors spread very
+easily, unlike features from more isolated nodes. In the original GCN paper, the authors proposed a
+hybrid normalization to counterbalance this effect. In practice, they assign higher weights to nodes
+with few neighbors using the following formula:
+
+![Figure 6.9](imgs/figure_6_9.png)
+
+In terms of individual embeddings, this operation can be written as follows:
+
+![Figure 6.10](imgs/figure_6_10.png)
+
+Those are the original formulas to implement a graph convolutional layer. As with our vanilla GNN
+layer, we can stack these layers to create a GCN. Let’s implement a GCN and verify that it performs
+better than our previous approaches.
+
+### 6.2. Comparing graph convolutional and graph linear layers
+
+Compared to the vanilla GNN, the main feature of the GCN is that it considers node degrees to
+weigh its features. Before the real implementation, let’s analyze the node degrees in both datasets. This
+information is relevant since it is directly linked to the performance of the GCN.
+
+From what we know about this architecture, we expect it to perform better when node degrees
+vary greatly. If every node has the same number of neighbors, these architectures are equivalent:
+
+![Figure 6.11](imgs/figure_6_11.png)
+
+[Predicting web traffic with node regression](./06-GCN.ipynb)
+
+### 7. Graph Attention Networks
+
+ <b> Graph Attention Networks (GATs) </b> are a theoretical improvement over GCNs. Instead of static
+normalization coefficients, they propose weighting factors calculated by a process called <b> self-attention </b>.
+The same process is at the core of one of the most successful deep learning architectures: the <b> transformer </b>,
+popularized by <b> BERT </b> and <b> GPT-3 </b>. Introduced by Veličković et al. in 2017, GATs have become one of
+the most popular GNN architectures thanks to excellent out-of-the-box performance.
+
+### 7.1. Introducing the graph attention layer
+
+The main idea behind GATs is that some nodes are more important than others. In fact, this was
+already the case with the graph convolutional layer: nodes with few neighbors were more important than others, thanks to the normalization coefficient:
+
+![Figure 7.1](imgs/figure_7_1.png)
+
+This approach is limiting because it only takes into account node degrees. On the other hand, the goal of the graph attention layer is to
+produce weighting factors that also consider the importance of node features.
+
+Let's call our wighting factors <b> attention scores </b> and note, $\alpha_{ij}$, the attention score between nodes $i$ and $j$. We can define the graph attention operator as follows:
+
+![Figure 7.2](imgs/figure_7_2.png)
+
+An important characteristic of GATs is that the attention scores are calculated implicitly by comparing
+inputs to each other (hence the name self-attention). In this section, we will see how to calculate these
+attention scores in four steps and also how to make an improvement to the graph attention layer:
+
+
+• Linear transformation
+
+• Activation function
+
+• Softmax normalization
+
+• Multi-head attention
+
+• Improved graph attention layer
+
+First things first, let’s see how the linear transformation differs from previous architectures.
+
+#### 7.1.1. Linear transformation
+
+The attention score represents the importance between a central $i$ node $j$ and a neighbor . As stated
+previously, it requires node features from both nodes. In the graph attention layer, it is represented by a concatenation between the hidden vectors $\bold{W}_{x_{i}}$ and $\bold{W}_{x_{j}}$, $[\bold{W}_{x_{i}}||\bold{W}_{x_{j}}]$. Here, $\blod{W}$ is a classic shared
+weight matrix to compute hidden vectors. An additional linear transformation is applied to this result
+with a dedicated learnable weight matrix $W_{att}$
+. During training, this matrix learns weights to produce
+attention coefficients $a_{i, j}$. This process is summarized by the following formula:
+
+![Figure 7.3](imgs/figure_7_3.png)
+
+This output is given to an activation function like in traditional neural networks.
+
+#### 7.1.2. Activation function
+
+Nonlinearity is an essential component in neural networks to approximate nonlinear target functions.
+Such functions could not be captured by simply stacking linear layers, as their final outcome would
+still behave like a single linear layer.
+
+In [the official implementation](https://github.com/PetarV-/GAT/blob/master/utils/layers.py), the authors chose the <b> Leaky Rectified Linear Unit (ReLU) </b> activation function
+(see Figure 7.1). This function fixes the <b> dying ReLU </b> problem, where ReLU neurons only output zero:
+
+![Figure 7.4](imgs/figure_7_4.png)
+
+This is implemented by applying the Leaky ReLU function to the output of the previous step:
+
+![Figure 7.5](imgs/figure_7_5.png)
+
+However, we are now facing a new problem: the resulting values are not normalized!
+
+#### 7.1.3. Softmax normalization
+
+![Figure 7.6](imgs/figure_7_6.png)
+
+#### 7.1.4. Multi-head attention
+
+This issue was already noticed by Vaswani et al. (2017) in the original transformer paper. Their proposed
+solution consists of calculating multiple embeddings with their own attention scores instead of a single
+one. This technique is called multi-head attention.
+
+The implementation is straightforward, as we just have to repeat the three previous steps multiple
+times. Each instance produces an embedding $ℎ_{j}^{k}$ , where $k$ is the index of the attention head. There
+are two ways of combining these results:
+
+- <b> Averaging: </b> With this, we sum the different embeddings and normalize the result by the number
+of attention heads $n$:
+
+![Figure 7.7](imgs/figure_7_7.png)
+
+- <b> Concatenation: </b> Here, we concatenate the different embeddings, which will produce a larger matrix:
+
+![Figure 7.8](imgs/figure_7_8.png)
+
+In practice, there is a simple rule to know which one to use: we choose the concatenation scheme when
+it’s a hidden layer and the average scheme when it’s the last layer of the network. The entire process
+can be summarized by the following diagram:
+
+![Figure 7.9](imgs/figure_7_9.png)
+
+This is all there is to know about the theoretical aspect of the graph attention layer. However, since its
+inception in 2017, an improvement has been suggested.
+
+#### 7.1.5. Improved graph attention layer
+
+Brody et al. (2021) argued that the graph attention layer only computes a static type of attention. This
+is an issue because there are simple graph problems we cannot express with a GAT. So they introduced
+an improved version, called GATv2, which computes a strictly more expressive dynamic attention.
+
+Their solution consists of modifying the order of operations. The weight matrix $W$
+is applied after
+the concatenation and the attention weight matrix $W_{att}$
+after the <i> LeckyReLU </i> activation function. In summary,
+here is the original <b> Graph Attentional Operator </b>, also <b> GAT </b>:
+
+![Figure 7.10](imgs/figure_7_10.png)
+
+And this is the modified operator, GATv2:
+
+![Figure 7.11](imgs/figure_7_11.png)
+
+Which one should we use? According to Brody et al., GATv2 consistently outperforms the GAT and
+thus should be preferred. In addition to the theoretical proof, they also ran several experiments to
+show the performance of GATv2 compared to the original GAT. In the rest of this chapter, we will
+consider both options: the GAT in the second section and GATv2 in the third section.
+
+### 7.2. Implementing the graph attention layer
+
+[Code](./Lesson-7/GAT.ipynb)
+
 
