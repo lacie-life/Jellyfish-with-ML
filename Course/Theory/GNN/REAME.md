@@ -540,5 +540,182 @@ wants to work with graphs and develop more advanced graph algorithms.
 
 ### 3. Creating Node Representations with DeepWalk
 
+DeepWalk is one of the first major successful applications of machine learning (ML) techniques to
+graph data. It introduces important concepts such as embeddings that are at the core of GNNs. Unlike
+traditional neural networks, the goal of this architecture is to produce representations that are then
+fed to other models, which perform downstream tasks (for example, node classification).
+
+### 3.1. Introducing Word2Vec
+
+The first step to comprehending the DeepWalk algorithm is to understand its major component: Word2Vec.
+
+Word2Vec has been one of the most influential deep-learning techniques in NLP. Published in 2013
+by Tomas Mikolov et al. (Google) in two different papers, it proposed a new technique to translate
+words into vectors (also known as embeddings) using large datasets of text. These representations can
+then be used in downstream tasks, such as sentiment classification. It is also one of the rare examples
+of patented and popular ML architecture.
+
+Here are a few examples of how Word2Vec can transform words into vectors:
+
+![Figure 3.1](imgs/figure_3_1.png)
+
+We can see in this example that, in terms of the Euclidian distance, the word vectors for <i> king </i> and
+<i> queen </i> are closer than the ones for <i> king </i> and <i> woman </i> (4.37 versus 8.47). In general, other metrics, such
+as the popular <b> cosine similarity </b>, are used to measure the likeness of these words. Cosine similarity
+focuses on the angle between vectors and does not consider their magnitude (length), which is more
+helpful in comparing them. Here is how it is defined:
+
+![Figure 3.2](imgs/figure_3_2.png)
+
+One of the most surprising results of Word2Vec is its ability to solve analogies. A popular example is
+how it can answer the question “man is to woman, what king is to ___?” It can be calculated as follows:
+
+![Figure 3.3](imgs/figure_3_3.png)
+
+This is not true with any analogy, but this property can bring interesting applications to perform
+arithmetic operations with embeddings.
+
+### 3.1.1. CBOW versus skip-gram
+
+A model must be trained on a pretext task to produce these vectors. The task itself does not need to
+be meaningful: its only goal is to produce high-quality embeddings. In practice, this task is always
+related to predicting words given a certain context.
+
+The authors proposed two architectures with similar tasks:
+
+- <b> The continuous bag-of-words (CBOW) model </b>: This is trained to predict a word using its
+surrounding context (words coming before and after the target word). The order of context
+words does not matter since their embeddings are summed in the model. The authors claim to
+obtain better results using four words before and after the one that is predicted.
+
+- <b> The continuous skip-gram model </b>: Here, we feed a single word to the model and try to predict
+the words around it. Increasing the range of context words leads to better embeddings but also
+increases the training time.
+
+In summary, here are the inputs and outputs of both models:
+
+![Figure 3.4](imgs/figure_3_4.png)
+
+In general, the CBOW model is considered faster to train, but the skip-gram model is more accurate
+thanks to its ability to learn infrequent words. This topic is still debated in the NLP community: a
+different implementation could fix issues related to CBOW in some contexts.
+
+### 3.1.2. Creating skip-grams
+
+For now, we will focus on the skip-gram model since it is the architecture used by DeepWalk. Skip-grams are implemented as pairs of words with the following structure: <i> (target word, context word) </i> ,
+where <i> target word </i>
+is the input and <i> context word </i>
+is the word to predict. The number of skip grams
+for the same target word depends on a parameter called <b> context size </b>, as shown in Figure 3.2:
+
+![Figure 3.5](imgs/figure_3_5.png)
+
+The same idea can be applied to a corpus of text instead of a single sentence.
+
+#### 3.1.3. The skip-gram model
+
+The goal of Word2Vec is to produce high-quality word embeddings. To learn these embeddings, the
+training task of the skip-gram model consists of predicting the correct context words given a target word.
+
+![Figure 3.6](imgs/figure_3_6.png)
+
+
+<i> Note </i>
+
+<i>
+
+Why do we use a log probability in the previous equation? Transforming probabilities into
+log probabilities is a common technique in ML (and computer science in general) for two
+main reasons.
+Products become additions (and divisions become subtractions). Multiplications are more
+computationally expensive than additions, so it’s faster to compute the log probability:
+
+log(A × B) = log(A) + log(B)
+
+The way computers store very small numbers (such as 3.14e-128) is not perfectly accurate,
+unlike the log of the same numbers (-127.5 in this case). These small errors can add up and
+bias the final results when events are extremely unlikely.
+
+On the whole, this simple transformation allows us to gain speed and accuracy without changing
+our initial objective.
+</i>
+
+The basic skip-gram model uses the softmax function to calculate the probability of a context word
+embedding $ℎ_c$ given a target word embedding $ℎ_t$ :
+
+![Figure 3.7](imgs/figure_3_7.png)
+
+Where is the vocabulary of size $|V|$ . This vocabulary corresponds to the list of unique words the
+model tries to predict.
+
+The skip-gram model is composed of only two layers:
+
+- <b> A projection layer </b> with a weight matrix $W_{embed}$
+, which takes a one-hot encoded-word vector
+as an input and returns the corresponding N-dim word embedding. It acts as a simple lookup
+table that stores embeddings of a predefined dimensionality.
+
+- <b> A fully connected layer </b> with a weight matrix $W_{output}$
+, which takes a word embedding as input
+and outputs $|V|$ -dim logits. A softmax function is applied to these predictions to transform
+logits into probabilities.
+
+<i> Note </i>
+
+<i>
+There is no activation function: Word2Vec is a linear classifier that models a linear relationship
+between words.
+</i>
+
+![Figure 3.8](imgs/figure_3_8.png)
+
+During training, these probabilities are compared to the correct one-hot encoded-target word vectors.
+The difference between these values (calculated by a loss function such as the cross-entropy loss) is
+backpropagated through the network to update the weights and obtain better predictions.
+
+The entire Word2Vec architecture is summarized in the following diagram, with both matrices and
+the final softmax layer:
+
+![Figure 3.9](imgs/figure_3_9.png)
+
+While this approach works well with small vocabularies, the computational cost of applying a full
+softmax function to millions of words (the vocabulary size ) is too costly in most cases. This has been
+a limiting factor in developing accurate language models for a long time. Fortunately for us, other
+approaches have been designed to solve this issue.
+
+Word2Vec (and DeepWalk) implements one of these techniques, called H-Softmax. Instead of a flat
+softmax that directly calculates the probability of every word, this technique uses a binary tree structure
+where leaves are words. Even more interestingly, a Huffman tree can be used, where infrequent words
+are stored at deeper levels than common words. In most cases, this dramatically speeds up the word
+prediction by a factor of at least 50.
+
+This was the most difficult part of the DeepWalk architecture. But before we can implement it, we
+need one more component: how to create our training data.
+
+### 3.2. DeepWalk and random walks
+
+Proposed in 2014 by Perozzi et al., DeepWalk quickly became extremely popular among graph
+researchers. Inspired by recent advances in NLP, it consistently outperformed other methods on several
+datasets. While more performant architectures have been proposed since then, DeepWalk is a simple
+and reliable baseline that can be quickly implemented to solve a lot of problems.
+
+The goal of DeepWalk is to produce high-quality feature representations of nodes in an unsupervised
+way. This architecture is heavily inspired by Word2Vec in NLP. However, instead of words, our dataset
+is composed of nodes. This is why we use random walks to generate meaningful sequences of nodes
+that act like sentences. The following diagram illustrates the connection between sentences and graphs:
+
+![Figure 3.10](imgs/figure_3_10.png)
+
+Random walks are sequences of nodes produced by randomly choosing a neighboring node at every
+step. Thus, nodes can appear several times in the same sequence.
+
+Why are random walks important? Even if nodes are randomly selected, the fact that they often
+appear together in a sequence means that they are close to each other. Under the <b> network homophily </b>
+hypothesis, nodes that are close to each other are similar. This is particularly the case in social networks,
+where people are connected to friends and family.
+
+This idea is at the core of the DeepWalk algorithm: when nodes are close to each other, we want to
+obtain high similarity scores. On the contrary, we want low scores when they are farther apart.
+
 
 
