@@ -30,6 +30,21 @@ https://cs231n.github.io/
 - Stride: number of pixels to slide
 - Zero padding: add zeros to the border of the image
 
+## Mini Project
+
+1. CNN for MNIST dataset
+2. Faster-RCNN for object detection
+3. HumanFace Mask Detection
+4. Weather Image Recognition
+5. Image Colorization
+6. Depth Estimation
+7. Crowd Counting
+8. Multi object instance segmentation
+9. Predict House Price
+10. Lung Cancer Detection
+11. ViT
+12. Human Pose Estimation
+
 
 
 
