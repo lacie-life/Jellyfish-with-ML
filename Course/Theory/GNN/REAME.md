@@ -1538,4 +1538,861 @@ food. Figure 9.4 shows the 3D plot of a protein.
 
 [Code](./code/09-GIN.ipynb)
 
+### 10. Predicting Links with Graph Neural Networks
 
+Link prediction is one of the most popular tasks performed with graphs. It is defined as the problem of
+predicting the existence of a link between two nodes. This ability is at the core of social networks and
+recommender systems. A good example is how social media networks display friends and followers
+you have in common with others. Intuitively, if this number is high, you are more likely to connect
+with these people. This likelihood is precisely what link prediction tries to estimate.
+
+#### 10.1. Predicting links with traditional methods
+
+The link prediction problem has been around for a long time, which is why numerous techniques
+have been proposed to solve it. First, this section will describe popular heuristics based on local and
+global neighborhoods. Then, we will introduce matrix factorization and its connection to DeepWalk
+and Node2Vec.
+
+#### 10.1.1. Heuristic techniques
+
+Heuristic techniques are a simple and practical way to predict links between nodes. They are easy
+to implement and offer strong baselines for this task. We can classify them based on the number of
+hops they perform (see Figure 10.1). Some of them only require 1-hop neighbors that are adjacent
+to the target nodes. More complex techniques also consider 2-hop neighbors or an entire graph. In
+this section, we will divide them into two categories – local (1-hop and 2-hop) and global heuristics.
+
+![Figure 10.1](imgs/figure_10_1.png)
+
+Local heuristics measure the similarity between two nodes by considering their local neighborhoods.
+We use $N(u)$ to denote the neighbors of node $u$. Here are three examples of popular local heuristics:
+
+- <b> Common neighbors </b> simply counts the number of neighbors two nodes have in common
+(1-hop neighbors). The idea is similar to our previous example with social networks – the more
+neighbors you have in common, the more likely you are to be connected:
+
+![Figure 10.2](imgs/figure_10_2.png)
+
+- <b> Jaccard’s coefficient </b> measures the proportion of neighbors shared by two nodes (1-hop
+neighbors). It relies on the same idea as common neighbors but normalizes the result by the
+total number of neighbors. This rewards nodes with few interconnected neighbors instead of
+nodes with high degrees:
+
+![Figure 10.3](imgs/figure_10_3.png)
+
+- The <B> Adamic–Adar </b> index sums the inverse logarithmic degree of neighbors shared by the two
+target nodes (2-hop neighbors). The idea is that common neighbors with large neighborhoods
+are less significant than those with small neighborhoods. This is why they should have less
+importance in the final score:
+
+![Figure 10.4](imgs/figure_10_4.png)
+
+All these techniques rely on neighbors’ node degrees, whether they are direct (common neighbors or
+Jaccard’s coefficient) or indirect (the Adamic–Adar index). This is beneficial for speed and explainability
+but also limits the complexity of the relationships they can capture.
+
+Global heuristics offer a solution to this problem by considering an entire network instead of a local
+neighborhood. Here are two well-known examples:
+
+- The <b> Katz index </b> computes the weighted sum of every possible path between two nodes.
+Weights correspond to a discount factor, $ β ∈ [0,1] $ (usually between 0.8 and 0.9), to penalize
+longer paths. With this definition, two nodes are more likely to be connected if there are many
+(preferably short) paths between them. Paths of any length can be calculated using adjacency
+matrix powers, $A^n$ , which is why the Katz index is defined as follows:
+
+![Figure 10.5](imgs/figure_10_5.png)
+
+- <b> Random walk with restart </b> performs random walks, starting from a target node. After
+each walk, it increases the visit count of the current node. With an α probability, it restarts the
+walk at the target node. Otherwise, it continues its random walk. After a predefined number of
+iterations, we stop the algorithm, and we can suggest links between the target node and nodes
+with the highest visit counts. This idea is also essential in DeepWalk and Node2Vec algorithms.
+
+Global heuristics are usually more accurate but require knowing the entirety of a graph. However,
+they are not the only way to predict links with this knowledge.
+
+#### 10.1.2. Matrix factorization
+
+Matrix factorization for link prediction is inspired by the previous work on recommender systems. With this technique, we indirectly predict links by predicting the entire adjacency matrix, ̂$\hat{A}$. This
+is performed using node embeddings – similar nodes,$u$ and $v$, should have similar embeddings, $z_u$
+and $z_v$ respectively. Using the dot product, we can write it as follows:
+
+• If these nodes are similar, $z_{v}^T z_u$ should be maximal
+
+• If these nodes are different, $z_{v}^T z_u$ should be minimal
+
+So far, we have assumed that similar nodes should be connected. This is why we can use this dot
+product to approximate each element (link) of the adjacency matrix,$A$:
+
+![Figure 10.6](imgs/figure_10_6.png)
+
+In terms of matrix multiplication, we have following:
+
+![Figure 10.7](imgs/figure_10_7.png)
+
+Here, $Z is the node embedding matrix. The following figure shows a visual explanation of how matrix factorization works:
+
+![Figure 10.8](imgs/figure_10_8.png)
+
+This technique is called matrix factorization because the adjacency matrix,$A$, is decomposed into a
+product of two matrices. The goal is to learn relevant node embeddings that minimize the L2 norm
+between true and predicted elements, $A_{uv}$
+, for the graph,$ G = (V,E)$ :
+
+![Figure 10.9](imgs/figure_10_9.png)
+
+There are more advanced variants of matrix factorization that include the Laplacian matrix and powers
+of $A$. Another solution consists of using models such as DeepWalk and Node2Vec. They produce
+node embeddings that can be paired to create link representations. According to Qiu, et al., these
+algorithms implicitly approximate and factorize complex matrices. For example, here is the matrix
+computed by DeepWalk:
+
+![Figure 10.10](imgs/figure_10_10.png)
+
+Here, $b$ is the parameter for negative sampling. The same can be said for similar algorithms, such as
+LINE and PTE. Although they can capture more complex relationships, they suffer from the same
+limitations:
+
+• <b> They cannot use node features: </b> They only use topological information to create embeddings
+
+• <b> They have no inductive capabilities: </b> They cannot generalize to nodes that were not in the
+training set
+
+• <b> They cannot capture structural similarity: </b> Structurally similar nodes in the graph can obtain
+vastly different embeddings
+
+These limitations motivate the need for GNN-based techniques, as we will see in the next sections.
+
+#### 10.2. Predicting links with node embeddings
+
+
+In the previous section, we saw how to use GNNs to produce node embeddings. A popular link
+prediction technique consists of using these embeddings to perform matrix factorization. This section
+will discuss two GNN architectures for link prediction – <b> the Graph Autoencoder (GAE) </b> and the
+<b> Variational Graph Autoencoder (VGAE) </b>.
+
+#### 10.2.1. Introducing Graph Autoencoders
+
+Both architectures were introduced by Kipf and Welling in 2016 [5] in a three-page paper. They
+represent the GNN counterparts of two popular neural network architectures – the autoencoder and
+the variational autoencoder. Prior knowledge about these architectures is helpful but not necessary.
+For ease of understanding, we will first focus on the GAE.
+
+The GAE is composed of two modules:
+
+- The <b> encoder </b> is a classic two-layer GCN that computes node embeddings as follows:
+
+
+![Figure 10.11](imgs/figure_10_11.png)
+
+- The <b> decoder </b> approximates the adjacency matrix, ̂$\hat{A}$, using matrix factorization and a sigmoid
+function, $σ$ , to output probabilities:
+
+![Figure 10.12](imgs/figure_10_12.png)
+
+Note that we are not trying to classify nodes or graphs. The goal is to predict a probability (between
+0 and 1) for each element of the adjacency matrix, ̂$\hat{A}$. This is why the GAE is trained using the binary
+cross-entropy loss (negative log-likelihood) between the elements of both adjacency matrices:
+
+![Figure 10.13](imgs/figure_10_13.png)
+
+However, adjacency matrices are often very sparse, which biases the GAE toward predicting zero
+= 1 in
+values. There are two simple techniques to fix this bias. First, we can add a weight to favor
+the previous loss function. Secondly, we can sample fewer zero values during training, making labels
+more balanced. The latter technique is the one implemented by Kipf and Welling.
+
+This architecture is flexible – the encoder can be replaced with another type of GNN (GraphSAGE,
+for example), and an MLP can take the role of a decoder, for instance. Another possible improvement
+involves transforming the GAE into a probabilistic variant – the Variational GAE.
+
+#### 10.2.2. Introducing VGAEs
+
+The difference between GAEs and VGAEs is the same as between autoencoders and variational
+autoencoders. Instead of directly learning node embeddings, VGAEs learn normal distributions that
+are then sampled to produce embeddings. They are also divided into two modules:
+
+![Figure 10.14](imgs/figure_10_14.png)
+
+![Figure 10.15](imgs/figure_10_15.png)
+
+With VGAEs, it is important to ensure that the encoder’s output follows a normal distribution. This is
+why we add a new term to the loss function – the <b> Kullback-Leibler (KL) </b> divergence, which measures
+the divergence between two distributions. We obtain the following loss, also called the <b> evidence lower
+bound (ELBO) </b>:
+
+![Figure 10.16](imgs/figure_10_16.png)
+
+Here, $q(Z|X,A)$ represents the encoder and $p(Z)$ is the prior distribution of $Z$.
+
+The model’s performance is generally evaluated using two metrics – the area under the ROC (<b>AUROC</b>)
+curve and the <b> average precision (AP) </b>.
+
+#### 10.3. Predicting links with SEAL
+
+The previous section introduced node-based methods, which learn relevant node embeddings to
+compute link likelihoods. Another approach consists of looking at the local neighborhood around the
+target nodes. These techniques are called subgraph-based algorithms and were popularized by <b> SEAL </b>
+(which could be said to stand for <b> Subgraphs, Embeddings, and Attributes for Link prediction </b> –
+though not always!). In this section, we will describe the SEAL framework and implement it using
+PyTorch Geometric.
+
+#### 10.3.1. Introducing the SEAL framework
+
+Introduced in 2018 by Zhang and Chen, SEAL is a framework that learns graph structure features
+for link prediction. It defines the subgraph formed by the target nodes $(x,y)$ and their k-hop neighbors
+as the <b> enclosing subgraph </b>. Each enclosing subgraph is used as input (instead of the entire graph) to
+predict a link likelihood. Another way to look at it is that SEAL automatically learns a local heuristic
+for link prediction.
+
+The framework involves three steps:
+
+1. <b> Enclosing subgraph extraction </b>, which consists of taking a set of real links and a set of fake
+links (negative sampling) to form the training data.
+
+2. <b> Node information matrix construction </b>, which involves three components – node labels, node
+embeddings, and node features.
+
+3. <b> GNN training </b>, which takes the node information matrices as input and outputs link likelihoods.
+
+These steps are summarized in the following figure:
+
+![Figure 10.17](imgs/figure_10_17.png)
+
+The enclosing subgraph extraction is a straightforward process. It consists of listing the target nodes
+and their k-hop neighbors to extract their edges and features. A high will improve the quality of the
+heuristics SEAL can learn, but it also creates larger subgraphs that are more computationally expensive.
+
+The first component of the node information construction is node labeling. This process assigns a
+specific number to each node. Without it, the GNN would be unable to differentiate between target
+and contextual nodes (their neighbors). It also embeds distances, which describe nodes’ relative
+positions and structural importance.
+
+In practice, the target nodes, x and y, must share a unique label to identify them as target nodes.
+For contextual nodes, and , they must share the same label if they have the same distance as the
+target nodes – d(i,x) = d(j,x) and d(i,y) = d(j,y) . We call this distance the double radius, noted
+as (d(i,x), d(i,y)).
+
+Different solutions can be considered, but SEAL’s authors propose the <b> Double-Radius Node Labeling (DRNL) </b> algorithm. It works as follows:
+
+1. First, assign label 1 to x and y.
+2. Assign label 1 to nodes with a radius – (1,1) .
+3. Assign label 3 to nodes with a radius – (1,2) or (2,1) .
+4. Assign label 4 to nodes with a radius – (1,3) , (3,1) , and so on.
+
+The DRNL function can be written as follows:
+
+![Figure 10.18](imgs/figure_10_18.png)
+
+Here, d = d( i, x) + d( i, y) , and ( d/2) and ( d%2) are the integer quotient and remainder of d divided
+by 2 respectively. Finally, these node labels are one-hot encoded.
+
+<i> Note </i>
+
+<i>
+The two other components are easier to obtain. The node embeddings are optional but can be
+calculated using another algorithm, such as Node2Vec. Then, they are concatenated with the
+node features and one-hot encoded labels to build the final node information matrix.
+</i>
+
+Finally, a GNN is trained to predict links, using enclosing subgraphs’ information and adjacency
+matrices. For this task, SEAL’s authors chose the <b> Deep Graph Convolutional Neural Network
+(DGCNN) </b>. This architecture performs three steps:
+
+1. Several GCN layers compute node embeddings that are then concatenated (like a GIN).
+
+2. A global sort pooling layer sorts these embeddings in a consistent order before feeding them
+into convolutional layers, which are not permutation-invariant.
+
+3. Traditional convolutional and dense layers are applied to the sorted graph representations and
+output a link probability.
+
+The DGCNN model is trained using the binary cross-entropy loss and outputs probabilities between
+0 and 1.
+
+[Code](./code/10-Predicting_Link.ipynb)
+
+### 11. Generating Graphs Using Graph Neural Networks
+
+Graph generation consists of finding methods to create new graphs. As a field of study, it provides
+insights into understanding how graphs work and evolve. It also has direct applications in data
+augmentation, anomaly detection, drug discovery, and so on. We can distinguish two types of generation:
+<b> realistic graph generation </b>, which imitates a given graph (for example, in data augmentation), and
+<b> goal-directed graph generation </b>, which creates graphs that optimize a specific metric (for instance,
+in molecule generation).
+
+#### 11.1. Generating graphs with traditional techniques
+
+Traditional graph generation techniques have been studied for decades. This is why they are well
+understood and can be used as baselines in various applications. However, they are often limited in
+the type of graphs they can generate. Most of them are specialized to output certain topologies, which
+is why they cannot simply imitate a given network.
+
+#### 11.1.1. The Erdős–Rényi model
+
+![Figure 11.1](imgs/figure_11_1.png)
+
+The strongest and most interesting assumption made by the $ G ( n,p )$ model is that links are independent
+(meaning that they do not interfere with each other). Unfortunately, it is not true for most real-world
+graphs, where we observe clusters and communities that contradict this rule.
+
+#### 11.1.2. The small-world model
+
+Introduced in 1998 by Duncan Watts and Steven Strogatz, the small-world model tries to imitate
+the behavior of biological, technological, and social networks. The main concept is that real-world
+networks are not completely random (as in the Erdős–Rényi model) but not totally regular either (as
+in a grid). This kind of topology is somewhere in between, which is why we can interpolate it using
+a coefficient. The small-world model produces graphs that have both:
+
+• <b> Short paths: </b> The average distance between any two nodes in the network is relatively small,
+which makes it easy for information to spread quickly throughout the network
+
+• <b> High clustering coefficients: </b> Nodes in the network tend to be closely connected to one another,
+creating dense clusters of nodes
+
+Many algorithms display small-world properties. In the following, we will describe the original Watts–
+Strogatz model proposed. It can be implemented using the following steps:
+1. We initialize a graph with $n$ nodes.
+2. Each node is connected to its nearest neighbors (or k − 1 neighbors if k is odd).
+3. Each link between nodes $i$ and $j$ has a probability $p$ of being rewired between $i$ and $k$, where $k$ is another random node.
+
+#### 11.2. Generating graphs with graph neural networks
+
+Deep graph generative models are GNN-based architectures that are more expressive than traditional
+techniques. However, it comes at a cost: they are often too complex to be analyzed and understood,
+like classical methods. We list three main families of architecture for deep graph generation: VAEs,
+GANs, and autoregressive models. Other techniques exist, such as normalizing flows or diffusion
+models, but they are less popular and mature than these three.
+
+This section will describe how to use VAEs, GANs, and autoregressive models to generate graphs.
+
+#### 11.2.1. Graph variational autoencoders
+
+As seen in the last chapter, VAEs can be used to approximate an adjacency matrix. The Graph
+Variational Autoencoder (GVAE) model we saw has two components: an encoder and a decoder. The
+encoder uses two GCNs that share their first layer to learn the mean and the variance of each latent
+normal distribution. The decoder then samples the learned distributions to perform the inner product
+between latent variables $Z$ . In the end, we obtained the approximated adjacency matrix $\hat{A} = \sigma (Z^T Z)$
+
+In the previous chapter, we used $\hat A$ to predict links. However, it is not its only application: it directly
+gives us the adjacency matrix of a network that imitates graphs seen during training. Instead of
+predicting links, we can use this output to generate new graphs.
+
+Since 2016, this technique has been expanded beyond the GVAE model to also output node and edge
+features. A good example is one of the most popular VAE-based graph generative models: <b> GraphVAE </b>. Introduced in 2018 by Simonovsky and Komodakis, it is designed to generate realistic molecules.
+This requires the ability to differentiate nodes (atoms) and edges (chemical bonds).
+
+![Figure 11.2](imgs/figure_11_2.png)
+
+There are many other VAE-based graph generative architectures. However, their role is not limited to
+imitating graphs: they can also embed constraints to guide the type of graphs they produce.
+
+A popular way of adding these constraints is to check them during the decoding phase, such as the
+<b> Constrained Graph Variational Autoencoder (CGVAE) </b>. In this architecture, the encoder is a <b> Gated Graph Convolutional Network (GGCN) </b>, and the decoder is an autoregressive model. Autoregressive
+decoders are particularly suited for this task, as they can verify every constraint for each step of the
+process. Finally, another technique to add constraints consists of using Lagrangian-based regularizers
+that are faster to compute but less strict in terms of generation.
+
+#### 11.2.2. Autoregressive models
+
+Autoregressive models can also be used on their own. The difference with other models is that past
+outputs become part of the current input. In this framework, graph generation becomes a sequential
+decision-making process that considers both data and past decisions. For instance, at each step, the
+autoregressive model can create a new node or a new link. Then, the resulting graph is fed to the
+model for the next generation step until we stop it. The following diagram illustrates this process:
+
+![Figure 11.3](imgs/figure_11_3.png)
+
+In practice, we use <b> Recurrent Neural Networks (RNNs) </b> to implement this autoregressive ability. In
+this architecture, previous outputs are used as inputs to compute the current hidden state. In addition,
+they can process inputs of arbitrary length, which is crucial for generating graphs iteratively. However,
+this computation is slower than feedforward networks, as the entire sequence must be processed to
+obtain the final output. The two most popular types of RNNs are the <b> Gated Recurrent Unit (GRU) </b>
+and <b> Long Short-Term Memory (LSTM) </b> networks.
+
+Introduced in 2018 by You et al., <b> GraphRNN </b> is a direct implementation of these techniques for
+deep graph generation. This architecture uses two RNNs:
+
+• A <i> graph-level RNN </i> to generate a sequence of nodes (including the initial state)
+
+• An <i> edge-level RNN </i> to predict connections for each newly added node
+
+The edge-level RNN takes the hidden state of the graph-level RNN as input and then feeds it with its
+own output. This mechanism is illustrated in the following diagram at inference time:
+
+![Figure 11.4](imgs/figure_11_4.png)
+
+Both RNNs are actually completing an adjacency matrix: each new node created by the graph-level RNN
+adds a row and a column, which are filled with zeros and ones by the edge-level RNN. In summary,
+GraphRNN performs the following steps:
+
+1. <i> Add new node: </i> The graph-level RNN initializes the graph and its output if fed to the edge-level RNN.
+
+2. <i> Add new connections: </i> The edge-level RNN predicts if the new node is connected to each of
+the previous nodes.
+
+3. <i> Stop graph generation: </i> The two first steps are repeated until the edge-level RNN outputs an
+EOS token, marking the end of the process.
+
+The GraphRNN can learn different types of graphs (grids, social networks, proteins, and so on) and
+completely outperform traditional techniques. It is an architecture of choice to imitate given graphs
+that should be preferred to GraphVAE.
+
+#### 11.2.3. Generative adversarial networks
+
+Like VAEs, GANs are a well-known generative model in ML. In this framework, two neural networks
+compete in a zero-sum game with two different goals. The first neural network is a generator that
+creates new data, and the second one is a discriminator that classifies each sample as real (from the
+training set) or fake (made by the generator).
+
+Over the years, two main improvements to the original architecture have been proposed. The first one
+is called the <b> Wasserstein GAN (WGAN) </b>. It improves learning stability by minimizing the Wasserstein
+distance (or Earth Mover’s distance) between two probability distributions. This variant is further
+refined by introducing a gradient penalty instead of the original gradient clipping scheme.
+
+Multiple works applied this framework to deep graph generation. Like previous techniques, GANs
+can imitate graphs or generate networks that optimize certain constraints. The latter option is handy
+in applications such as finding new chemical compounds with specific properties. This problem is
+exceptionally vast (over $10^{60}$ possible combinations) and complex due to its discrete nature.
+
+Proposed by De Cao and Kipf in 2018, the <b> molecular GAN (MolGAN) </b> is a popular solution to this
+problem. It combines a WGAN with a gradient penalty that directly processes graph-structured data
+and an RL objective to generate molecules with desired chemical properties. This RL objective is based
+on the <b> Deep Deterministic Policy Gradient (DDPG) </b> algorithm, an off-policy actor-critic model that
+uses deterministic policy gradients. MolGAN’s architecture is summarized in the following diagram:
+
+![Figure 11.5](imgs/figure_11_5.png)
+
+This framework is divided into three main components:
+
+• The <b> generator </b> is an MLP that outputs a node matrix containing the atom types and an
+adjacency matrix , which is actually a tensor containing both the edges and bond types. The
+generator is trained using a linear combination of the WGAN and RL loss. We translate these
+dense representations into sparse objects ( ̃ X and ̃ A) via categorical sampling.
+
+• The <b> discriminator </b> receives graphs from the generator and the dataset and learns to distinguish
+them. It is solely trained using the WGAN loss.
+
+• The <b> reward network </b> scores each graph. It is trained using the MSE loss based on the real score
+provided by an external system (RDKit in this case).
+
+The discriminator and the reward network use the GNN mode: the Relational-GCN, a GCN variant
+that supports multiple edge types. After several layers of graph convolutions, node embeddings are
+aggregated into a graph-level vector output:
+
+![Figure 11.6](imgs/figure_11_6.png)
+
+Here, σ denotes the logistic sigmoid function, $MLP_1$ and $MLP_2$ are
+two MLPs with linear output, and
+$⊙$ is the element-wise multiplication. A third MLP further processes this graph embedding to produce
+a value between 0 and 1 for the reward network and between $−∞$ and $+∞$ for the discriminator.
+MolGAN produces valid chemical compounds that optimize properties such as drug likeliness,
+synthesizability, and solubility.
+
+[Code](./code/11-Generating_Graphs.ipynb)
+
+### 12. Learning from Heterogeneous Graphs
+
+#### 12.1. The message passing neural network framework
+
+Before exploring heterogeneous graphs, let’s recap what we have learned about homogeneous GNNs. In
+the previous chapters, we saw different functions for aggregating and combining features from different
+nodes. As seen in section 5, the simplest GNN layer consists of summing the linear combination of
+features from neighboring nodes (including the target node itself) with a weight matrix. The output
+of the previous sum then replaces the previous target node embedding.
+
+The node-level operator can be written as follows:
+
+![Figure 12.1](imgs/figure_12_1.png)
+
+GCN and GAT layers added fixed and dynamic weights to node features but kept the same idea. Even
+GraphSAGE’s LSTM operator or GIN’s max aggregator did not change the main concept of a GNN
+layer. If we look at all these variants, we can generalize GNN layers into a common framework called
+the <b> Message Passing Neural Network </b> ( <b> MPNN </b> or <b> MP-GNN </b>). Introduced in 2017 by Gilmer et al., this framework consists of three main operations:
+
+• <b> Message: </b> Every node uses a function to create a message for each neighbor. It can simply
+consist of its own features (as in the previous example) or also consider the neighboring node’s
+features and edge features.
+
+• <b> Aggregate: </b> Every node aggregates messages from its neighbors using a permutation-equivariant
+function, such as the sum in the previous example.
+
+• <b> Update: </b> Every node updates its features using a function to combine its current features and
+the aggregated messages. In the previous example, we introduced a self-loop to aggregate the
+current features of the node, such as a neighbor.
+
+These steps can be summarized in a single equation:
+
+![Figure 12.2](imgs/figure_12_2.png)
+
+![Figure 12.3](imgs/figure_12_3.png)
+
+#### 12.2. Introducing heterogeneous graphs
+
+Heterogeneous graphs are a powerful tool to represent general relationships between different entities.
+Having different types of nodes and edges creates graph structures that are more complex but also more
+difficult to learn. In particular, one of the main problems with heterogeneous networks is that features
+from different types of nodes or edges do not necessarily have the same meaning or dimensionality.
+
+Therefore, merging different features would destroy a lot of information. This is not the case with
+homogeneous graphs, where each dimension has the exact same meaning for every node or edge.
+
+![Figure 12.4](imgs/figure_12_4.png)
+
+In this graph, we see three types of nodes (users, games, and developers) and three types of edges
+(<b> follows </b>, <b> plays </b>, and <b> develops </b>). It represents a network involving people (users and developers) and
+games that could be used for various applications, such as recommending games. If this graph contained
+millions of elements, it could be used as a graph-structured knowledge database, or a knowledge
+graph. Knowledge graphs are used by Google or Bing to answer queries such as, “Who plays games
+developed by <b> Dev 1 </b> ?”
+
+Similar queries can extract useful homogeneous graphs. For example, we might want only to consider
+users who play <b> Game 1 </b>. The output would be <b> User 1 </b> and <b> User 2 </b>. We can create more complex queries,
+such as, “Who are the users who play games developed by <b> Dev 1 </b> ?” The result is the same, but we
+traversed two relations to obtain our users. This kind of query is called a meta-path.
+
+In the first example, our meta-path was User → Game → User (commonly denoted as UGU), and in the
+second one, our meta-path was User → Game → Dev → Game → User (or UGDGU). Note that the start
+node type and the end node type are the same. Meta-paths are an essential concept in heterogeneous
+graphs, often used to measure the similarity of different nodes.
+
+#### 12.3. Transforming homogeneous GNNs to heterogeneous GNNs
+
+To better understand the problem, let’s take a real dataset as an example. The DBLP computer science
+bibliography offers a dataset, [2-3], that contains four types of nodes – papers (14,328), terms
+(7,723), authors (4,057), and conferences (20). This dataset’s goal is to correctly classify the
+authors into four categories – database, data mining, artificial intelligence, and information retrieval.
+The authors’ node features are a bag-of-words (“0” or “1”) of 334 keywords they might have used in
+their publications. The following figure summarizes the relations between the different node types.
+
+![Figure 12.5](imgs/figure_12_5.png)
+
+These node types do not have the same dimensionalities and semantic relationships. In heterogeneous
+graphs, relations between nodes are essential, which is why we want to consider node pairs. For example,
+instead of feeding author nodes to a GNN layer, we would consider a pair such as (author, paper).
+It means we now need a GNN layer per relation; in this case, the “to” relations are bidirectional, so
+we would get six layers.
+
+These new layers have independent weight matrices with the right size for each node type. Unfortunately,
+we have only solved half of the problem. Indeed, we now have six distinct layers that do not share any
+information. We can fix that by introducing <b> skip-connections </b>, <b> shared layers </b>,  <b> jumping knowledge </b>,
+and so on.
+
+Before we transform a homogeneous model into a heterogeneous one, let’s implement a classic GAT
+on the DBLP dataset. The GAT cannot take into account different relations; we have to give it a unique
+adjacency matrix that connects authors to each other. Fortunately, we now have a technique to generate
+this adjacency matrix easily – we can create a meta-path, such as author-paper-author, that
+will connect authors from the same papers.
+
+
+<i>
+
+Note
+
+We can also build a good adjacency matrix through random walks. Even if the graph is
+heterogeneous, we can explore it and connect nodes that often appear in the same sequences.
+
+</i>
+
+![Figure 12.6](imgs/figure_12_6.png)
+
+#### 12.4. Implementing a hierarchical self-attention network
+
+In this section, we will implement a GNN model designed to handle heterogeneous graphs – the
+<b> hierarchical self-attention network (HAN) </b>. This architecture was introduced by Liu et al. in 2021. HAN uses self-attention at two different levels:
+
+• <b> Node-level attention </b> to understand the importance of neighboring nodes in a given meta-path
+(such as a GAT in a homogeneous setting).
+
+• <b> Semantic-level attention </b> to learn the importance of each meta-path. This is the main feature
+of HAN, allowing us to select the best meta-paths for a given task automatically – for example,
+the meta-path game-user-game might be more relevant than game-dev-game in some
+tasks, such as predicting the number of players.
+
+In the following section, we will detail the three main components – node-level attention,
+semantic-level attention, and the prediction module. This architecture is illustrated in Figure 12.5.
+
+![Figure 12.7](imgs/figure_12_7.png)
+
+Like in a GAT, the first step consists of projecting nodes into a unified feature space for each
+meta-path. We then calculate the weight of a node pair (concatenation of two projected nodes) in the
+same meta-path, with a second weight matrix. A nonlinear function is applied to this result, which is
+then normalized with the softmax function. The normalized attention score (importance) of the
+node to the node is calculated as follows:
+
+![Figure 12.8](imgs/figure_12_8.png)
+
+![Figure 12.9](imgs/figure_12_9.png)
+
+### 13. Temporal Graph Neural Networks
+
+#### 13.1. Introducing dynamic graphs
+
+Dynamic graphs and temporal GNNs unlock a variety of new applications, such as transport and web
+traffic forecasting, motion classification, epidemiological forecasting, link prediction, power system
+forecasting, and so on. Time series forecasting is particularly popular with this kind of graph, as we
+can use historical data to predict the system’s future behavior.
+
+In this section, we focus on graphs with a temporal component. They can be divided into two categories:
+
+• <b> Static graphs with temporal signals: </b> The underlying graph does not change, but features and
+labels evolve over time.
+
+• <b> Dynamic graphs with temporal signals: </b> The topology of the graph (the presence of nodes
+and edges), features, and labels evolve over time.
+
+In the first case, the graph’s topology is static. For example, it can represent a network of cities within
+a country for traffic forecasting: features change over time, but the connections stay the same.
+
+In the second option, nodes and/or connections are dynamic. It is useful to represent a social network
+where links between users can appear or disappear over time. This variant is more general, but also
+harder to learn how to implement.
+
+In the following sections, we will see how to handle these two types of graphs with temporal signals
+using PyTorch Geometric Temporal.
+
+#### 13.2. Forecasting web traffic
+
+In this section, we will predict the traffic of Wikipedia articles (as an example of a static graph with a
+temporal signal) using a temporal GNN. This regression task has already been covered in Chapter 6,
+Introducing Graph Convolutional Networks. However, in that version of the task, we performed traffic
+forecasting using a static dataset without a temporal signal: our model did not have any information
+about previous instances. This is an issue because it could not understand whether the traffic was
+currently increasing or decreasing, for example. We can now improve this model to include information
+about past instances.
+
+#### 13.2.1. Introducing EvolveGCN
+
+For this task, we will use the <b> EvolveGCN </b> architecture. Introduced by Pareja et al. in 2019, it proposes
+a natural combination of GNNs and Recurrent Neural Networks (RNNs). Previous approaches,
+such as graph convolutional recurrent networks, applied RNNs with graph convolution operators to
+calculate node embeddings. By contrast, EvolveGCN applies RNNs to the GCN parameters themselves.
+As the name implies, the GCN evolves over time to produce relevant temporal node embeddings. The
+following figure illustrates a high-level view of this process.
+
+![Figure 13.1](imgs/figure_13_1.png)
+
+This architecture has two variants:
+
+• <b> EvolveGCN-H </b>, where the recurrent neural network considers both the previous GCN parameters
+and the current node embeddings
+
+• <b> EvolveGCN-O </b>, where the recurrent neural network only considers the previous GCN parameters
+
+EvolveGCN-H typically uses a <b> Gated Recurrent Unit (GRU) </b> instead of a vanilla RNN. The GRU
+is a streamlined version of the 
+<b> Long Short-Term Memory (LSTM) </b> unit that achieves comparable
+performance with fewer parameters. It is comprised of a reset gate, an update gate, and a cell state. In
+this architecture, GRU updates the GCN’s weight matrix for layer $l$ at time $t$ as follows:
+
+![Figure 13.2](imgs/figure_13_2.png)
+
+![Figure 13.3](imgs/figure_13_3.png)
+
+EvolveGCN-H can be implemented with a GRU that receives two extensions:
+
+• The inputs and hidden states are matrices instead of vectors to store the GCN weight
+matrices properly
+
+• The column dimension of the input must match that of the hidden state, which requires $H_{t}^{(l)}$
+summarizing the node embedding matrix
+to only keep the appropriate number of columns
+
+These extensions are not required for the EvolveGCN-O variant. Indeed, EvolveGCN-O is based on
+an LSTM network to model the input-output relationship. We do not need to feed a hidden state to
+the LSTM, as it already includes a cell that remembers previous values. This mechanism simplifies
+the update step, which can be written as follows:
+
+![Figure 13.4](imgs/figure_13_4.png)
+
+The resulting GCN weight matrix is used in the same way to produce the next layer’s node embeddings:
+
+![Figure 13.5](imgs/figure_13_5.png)
+
+![Figure 13.6](imgs/figure_13_6.png)
+
+So which version should we use? As is often the case in machine learning, the best solution
+is data-dependent:
+
+• EvolveGCN-H works better when the node features are essential because its RNN explicitly
+incorporates node embeddings
+
+• EvolveGCN-O works better when the graph structure plays an important role, as it focuses
+more on topological changes
+
+Note that these remarks are primarily theoretical, which is why it can be helpful to test both variants
+in your applications. This is what we will do by implementing these models for web traffic forecasting.
+
+#### 13.2.2. Implementing EvolveGCN
+
+In this section, we want to forecast web traffic on a static graph with a temporal signal. The WikiMaths
+dataset is comprised of 1,068 articles represented as nodes. Node features correspond to the past daily
+number of visits (eight features by default). Edges are weighted, and weights represent the number of
+links from the source page to the destination page. We want to predict the daily user visits to these
+Wikipedia pages between March 16, 2019, and March 15, 2021, which results in 731 snapshots. Each
+snapshot is a graph describing the state of the system at a certain time.
+
+Figure 13.4 shows a representation of WikiMaths made with Gephi, where the size and color of the
+nodes are proportional to their number of connections.
+
+![Figure 13.7](imgs/figure_13_7.png)
+
+#### 13.3. Predicting cases of COVID-19
+
+This section will focus on a new application with epidemic forecasting. We will use the England Covid
+dataset, a dynamic graph with temporal information introduced by Panagopoulos et al. in 2021.
+While nodes are static, connections between and edge weights vary over time. This dataset represents
+the number of reported cases of COVID-19 in 129 England NUTS 3 regions between March 3 and
+May 12, 2020. Data was collected from mobile phones that installed the Facebook application and
+shared their location history. Our goal is to predict the number of cases in each node (region) in 1 day.
+
+![Figure 13.8](imgs/figure_13_8.png)
+
+This dataset represents England as a graph $ G = (V,E)$ . Due to the temporal nature of this dataset, it is
+composed of multiple graphs corresponding to each day of the studied period $G^{(1)}$, … , $G^{(n)}$ . In these
+graphs, node features correspond to the number of cases in each of the past $d$ days in this region.
+Edges are unidirectional and weighted: the weight $w_{v,u}^{(t)}$ , of edge $(u,v)$ represents the number of people
+that moved from region to region at time . These graphs also contain self-loops corresponding
+to people moving within the same region.
+
+#### 13.3.1. Introducing MPNN-LSTM
+
+As its name suggests, <b> MPNN-LSTM </b> architecture relies on combining an MPNN and an LSTM
+network. Like the England Covid dataset, it was also introduced by Panagopoulos et al. in 2021/
+
+The input node features with the corresponding edge indexes and weights are fed to a GCN layer.
+We apply a batch normalization layer and a dropout to this output. This process is repeated a second
+time with the outcome of the first MPNN. It produces a node embedding matrix $H^{(t)}$ . We create a
+sequence $H^{(1)}$, … , $H^{(T)}$ of node embedding representations by applying these MPNNs for each time
+step. This sequence is fed to a 2-layer LSTM network to capture the temporal information from the
+graphs. Finally, we apply a linear transformation and a ReLU function to this output to produce a
+prediction at t + 1 .
+
+![Figure 13.9](imgs/figure_13_9.png)
+
+The authors of MPNN-LSTM note that it is not the best-performing model on the England Covid
+dataset (the MPNN with a two-level GNN is). However, it is an interesting approach that could perform
+better in other scenarios. They also state that it is more suited for long-term forecasting, such as 14
+days in the future instead of a single day, as in our version of this dataset. Despite this issue, we use
+the latter for convenience, as it does not impact the design of the solution.
+
+### 14. Explaining Graph Neural Networks
+
+One of the most common criticisms of NNs is that their outputs are difficult to understand. Unfortunately,
+GNNs are not immune to this limitation: in addition to explaining which features are important, it
+is necessary to consider neighboring nodes and connections. In response to this issue, the area of
+explainability (in the form of explainable AI or XAI) has developed many techniques to better
+understand the reasons behind a prediction or the general behavior of a model. Some of these
+techniques have been translated to GNNs, while others take advantage of the graph structure to offer
+more precise explanations.
+
+#### 14.1. Introducing explanation techniques
+
+GNN explanation is a recent field that is heavily inspired by other XAI techniques. We divide it
+into local explanations on a per-prediction basis and global explanations for entire models. While
+understanding the behavior of a GNN model is desirable, we will focus on local explanations that are
+more popular and essential to get insight into a prediction.
+
+In this chapter, we distinguish between “interpretable” and “explainable” models. A model is called
+“interpretable” if it is human-understandable by design, such as a decision tree. On the other hand,
+it is “explainable” when it acts as a black box whose predictions can only be retroactively understood
+using explanation techniques. This is typically the case with NNs: their weights and biases do not
+provide clear rules like a decision tree, but their results can be explained indirectly.
+
+There are four main categories of local explanation techniques:
+
+• <b> Gradient-based methods </b> analyze gradients of the output to estimate attribution scores (for
+example, <b> integrated gradients </b>)
+
+• <b> Perturbation-based methods </b> mask or modify input features to measure changes in the output
+(for example, <b> GNNExplainer </b>)
+
+• <b> Decomposition methods </b> decompose the model’s predictions into several terms to gauge their
+importance (for example, <b> graph neural network layer-wise relevance propagation (GNN-LRP) </b>)
+
+• <b> Surrogate methods </b> use a simple and interpretable model to approximate the original model’s
+prediction around an area (for example, <b> GraphLIME </b>)
+
+These techniques are complementary: they sometimes disagree on the contribution of edges and
+features, which can be used to refine the explanation of a prediction further. Explanation techniques
+are traditionally evaluated using metrics such as the following:
+
+![Figure 14.1](imgs/figure_14_1.png)
+
+![Figure 14.2](imgs/figure_14_2.png)
+
+
+In addition to the traditional graphs we saw in previous chapters, explanation techniques are often
+evaluated on synthetic datasets, such as BA-Shapes, BA-Community, Tree-Cycles, and
+Tree-Grid. These datasets were generated using graph generation algorithms to create specific
+patterns. We will not use them in this chapter, but they are an interesting alternative that is easy to
+implement and understand.
+
+In the following sections, we will describe a gradient-based method (integrated gradients) and a
+perturbation-based technique (GNNExplainer).
+
+#### 14.2. Explaining GNNs with GNNExplainer
+
+In this section, we will introduce our first XAI technique with GNNExplainer. We will use it to
+understand the predictions produced by a GIN model on the MUTAG dataset.
+
+Introduced in 2019 by Ying et al. [2], GNNExplainer is a GNN architecture designed to explain
+predictions from another GNN model. With tabular data, we want to know which features are the most
+important to a prediction. However, this is not enough with graph data: we also need to know which
+nodes are the most influential. GNNExplainer generates explanations with these two components
+by providing a subgraph $G_S$
+and a subset of node features $X_S$ . The following figure illustrates an
+explanation provided by GNNExplainer for a given node:
+
+![Figure 14.3](imgs/figure_14_3.png)
+
+To predict $G_S$ and $X_S$ , GNNExplainer implements an edge mask (to hide connections) and a feature
+mask (to hide node features). If a connection or a feature is important, removing it should drastically
+change the prediction. On the other hand, if the prediction does not change, it means that this
+information was redundant or simply irrelevant. This principle is at the core of perturbation-based
+techniques such as GNNExplainer.
+
+In practice, we must carefully craft a loss function to find the best masks possible. GNNExplainer
+measures the mutual dependence between the predicted label distribution $Y$ and ($G_S$, $X_S$), also called
+<b> mutual information (MI) </b>. Our goal is to maximize the MI, which is equivalent to minimizing the
+conditional cross-entropy. GNNExplainer is trained to find the variables $G_S$ and $X_S$ that maximize
+the probability of a prediction $\hat y$.
+
+In addition to this optimization framework, GNNExplainer learns a binary feature mask and implements
+several regularization techniques. The most important technique is a term used to minimize the size
+of the explanation (sparsity). It is computed as the sum of all elements of the mask parameters and
+added to the loss function. It creates more user-friendly and concise explanations that are easier to
+understand and interpret.
+
+GNNExplainer can be applied to most GNN architectures and different tasks such as node classification,
+link prediction, or graph classification. It can also generate explanations of a class label or an entire
+graph. When classifying a graph, the model considers the union of adjacency matrices for all nodes in
+the graph instead of a single one. In the next section, we will apply it to explain graph classifications.
+
+#### 14.3. Explaining GNNs with Captum
+
+Captum (captum.ai) is a Python library that implements many state-of-the-art explanation
+algorithms for PyTorch models. This library is not dedicated to GNNs: it can also be applied to text,
+images, tabular data, and so on. It is particularly useful because it allows users to quickly test various
+techniques and compare different explanations for the same prediction. In addition, Captum implements
+popular algorithms such as LIME and Gradient SHAP for primary, layer, and neuron attributions.
+In this section, we will use it to apply a graph version of integrated gradients [4]. This technique aims
+to assign an attribution score to every input feature. To this end, it uses gradients with respect to the
+model’s inputs. Specifically, it uses an input $x$ and a baseline input $x′$ (all edges have zero weight in our
+case). It computes the gradients at all points along the path between $x$ and $x′$ and accumulates them.
+
+![Figure 14.4](imgs/figure_14_4.png)
+
+In practice, instead of directly calculating this integral, we approximate it with a discrete sum.
+Integrated gradients is model-agnostic and based on two axioms:
+
+• <b> Sensitivity: </b> Every input contributing to the prediction must receive a nonzero attribution
+
+• <b> Implementation invariance: </b> Two NNs whose outputs are equal for all inputs (these networks
+are called functionally equivalent) must have identical attributions
+
+The graph version we will employ is slightly different: it considers nodes and edges instead of features.
+
+As a result, you can see that the output differs from GNNExplainer, which considers node features
+and edges. This is why these two approaches can be complementary.
+
+[Code](./code/14-Explaining_Graph_Neural_Networks.ipynb)
