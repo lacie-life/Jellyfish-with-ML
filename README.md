@@ -45,6 +45,8 @@ https://cs231n.github.io/
 11. ViT
 12. Human Pose Estimation (detectron2)  
 13. Forecasting Tracffic (T-GCN)
+14. DetectingAnomalies (Heterogeneous GNNs)
+15. Recommendation System (LightGNN)
 
 
 
