@@ -32,18 +32,19 @@ https://cs231n.github.io/
 
 ## Mini Project
 
-1. CNN for MNIST dataset
-2. Faster-RCNN for object detection
-3. HumanFace Mask Detection
-4. Weather Image Recognition
-5. Image Colorization
-6. Depth Estimation
-7. Crowd Counting
-8. Multi object instance segmentation
-9. Predict House Price
+1. CNN for MNIST dataset (CNN)
+2. Faster-RCNN for object detection (Fassster-RCNN)
+3. HumanFace Mask Detection (MobileNetV2)
+4. Weather Image Recognition (VGG16/MobileNetV2/InceptionV3/Xception/ResNet/DenseNet)
+5. Image Colorization (UNet)
+6. Depth Estimation (Unet++)
+7. Crowd Counting (CSRNet)
+8. Multi object instance segmentation (detectron2)
+9. Predict House Price (Linear Regression)
 10. Lung Cancer Detection
 11. ViT
-12. Human Pose Estimation
+12. Human Pose Estimation (detectron2)  
+
 
 
 
