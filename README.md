@@ -44,6 +44,8 @@ https://cs231n.github.io/
 10. Lung Cancer Detection
 11. ViT
 12. Human Pose Estimation (detectron2)  
+13. Forecasting Tracffic (T-GCN)
+
 
 
 
