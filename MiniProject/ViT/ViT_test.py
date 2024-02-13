@@ -83,7 +83,7 @@ class Transformer(nn.Module):
 
 class ViT(nn.Module):
     def __init__(self, *, image_size, image_patch_size, frames, frame_patch_size, num_classes, dim, depth, heads,
-                 mlp_dim, pool='cls', channels=3, dim_head=64, dropout=0., emb_dropout=0.):
+                 mlp_dim, pool='cls', channels=100, dim_head=64, dropout=0., emb_dropout=0.):
         super().__init__()
         image_height, image_width = pair(image_size)
         patch_height, patch_width = pair(image_patch_size)
@@ -94,7 +94,7 @@ class ViT(nn.Module):
         num_patches = (image_height // patch_height) * (image_width // patch_width) * (frames // frame_patch_size)
         patch_dim = channels * patch_height * patch_width * frame_patch_size
 
-        # print(patch_dim)
+        print(patch_dim)
 
         assert pool in {'cls', 'mean'}, 'pool type must be either cls (cls token) or mean (mean pooling)'
 
@@ -147,11 +147,11 @@ v = ViT(
     depth=6,
     heads=8,
     mlp_dim=2048,
-    channels=5,
+    # channels=100,
     dropout=0.1,
     emb_dropout=0.1
 )
 
-video = torch.randn(1, 5, 128, 112, 112)  # (batch, channels, frames, height, width)
+video = torch.randn(1, 100, 128, 112, 112)  # (batch, channels, frames, height, width)
 
 preds = v(video)  # (4, 1000)
