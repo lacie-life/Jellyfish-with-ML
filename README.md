@@ -47,6 +47,7 @@ https://cs231n.github.io/
 13. Forecasting Tracffic (T-GCN)
 14. DetectingAnomalies (Heterogeneous GNNs)
 15. Recommendation System (LightGNN)
+16. Spatial Transformer Network (ONNX export support)
 
 
 
