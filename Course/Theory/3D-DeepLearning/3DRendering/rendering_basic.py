@@ -132,3 +132,5 @@ plt.figure(figsize=(10, 10))
 plt.imshow(images[0, ..., :3].cpu().numpy())
 plt.axis("off")
 plt.savefig('blue.png')
+
+
